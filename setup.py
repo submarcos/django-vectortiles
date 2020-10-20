@@ -25,7 +25,7 @@ setup(
     description_content_type="text/markdown",
     long_description_content_type="text/markdown",
     packages=find_packages(),
-    url='https://github.com/Terralego/django-vectortiles.git',
+    url='https://github.com/submarcos/django-vectortiles.git',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
