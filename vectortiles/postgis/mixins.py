@@ -13,10 +13,13 @@ class PostgisBaseVectorTile(BaseVectorTileMixin):
         features = self.get_vector_tile_queryset()
 
         # keep features intersecting tile
-        features = features.filter(geom__intersects=Transform(MakeEnvelope(xmin, ymin, xmax, ymax, 3857),
-                                                              4326))
+        filters = {
+            f"{self.vector_tile_geom_name}__intersects": Transform(MakeEnvelope(xmin, ymin, xmax, ymax, 3857),
+                                                                   4326)
+        }
+        features = features.filter(**filters)
         # annotate prepared geometry for MVT
-        features = features.annotate(geom_prepared=AsMVTGeom('geom',
+        features = features.annotate(geom_prepared=AsMVTGeom(self.vector_tile_geom_name,
                                                              MakeEnvelope(xmin, ymin, xmax, ymax, 3857),
                                                              extent,
                                                              buffer,
