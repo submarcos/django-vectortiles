@@ -1,0 +1,79 @@
+dist: bionic
+
+language: python
+
+python:
+- '3.6'
+- '3.7'
+- '3.8'
+
+env:
+  matrix:
+  - DJANGO_VERSION=2.2.*
+  - DJANGO_VERSION=3.1.*
+  - DJANGO_VERSION=dev
+
+services:
+- postgresql
+
+addons:
+  postgresql: '10'
+  apt:
+    packages:
+    - postgresql-10-postgis-2.4
+
+stages:
+- lint
+- test
+- deploy
+
+install:
+- sudo apt-get -y install libproj-dev binutils gdal-bin libgdal-dev
+- pip install .[dev,mapbox,postgis]
+- pip install codecov
+- if [[ $DJANGO_VERSION == dev ]]; then
+  pip install -e git+https://github.com/django/django@master#egg=django;
+  else
+  pip install Django==$DJANGO_VERSION -U; fi
+
+before_script:
+- psql -c "CREATE USER travis_ci_test WITH ENCRYPTED PASSWORD 'travis_ci_test';" -U
+  postgres
+- psql -c "ALTER USER travis_ci_test WITH SUPERUSER;" -U postgres
+- psql -c 'CREATE DATABASE travis_ci_test WITH OWNER travis_ci_test;' -U postgres
+- psql -d travis_ci_test -c 'CREATE EXTENSION postgis;'
+
+after_failure:
+- pip freeze
+
+script:
+- coverage run ./manage.py test
+
+after_success:
+  - codecov
+
+jobs:
+  allow_failures:
+    - env: DJANGO_VERSION=dev
+
+  include:
+  - stage: lint
+    install:
+    - pip install flake8
+    before_script: skip
+    script:
+    - flake8 vectortiles test_vectortiles
+    after_success: skip
+
+  - stage: deploy
+    install: skip
+    before_script: skip
+    script: skip
+    deploy:
+      skip_cleanup: true
+      provider: pypi
+      user: "$PYPI_USER"
+      password:
+        secure: 3iKfIrDSDh9Jk2kxET4KK4+emafEbke3DCah1utdtvOy+YSkvmq9ER/LOqJCXCTyCknj1sKcXpNdzp/xcDh3wVZunorIXOZk9f/7R4Ne9PFPnRBcTNbGIahlXt8Bu8a42KSvuLc/CfVk/A6/y1jdaFcZawn1megtjbqo9XyV6yiYw0t4b+IhcDFrFYtn3tUV3B3ej2wkylql05UYg80DghiG0qoyUAnBr2AGygqUISJv06ALpKaCzsmbhBAxa8zyLXvynMTE6ZPyopsr3nZFAR54u51BXoyYaVB5lvo+OTthjT3NIeA5ZN4noqnoHkUxygTYBTLBZLnV//f985+3J9v56Ceem4IbUimbn4B/EKg5eZii0J/NygfEJdEnfWQ+nT7E7ulqbSFP4DoCTjlNlW2AM72uKfsbBsGApsHGtpbmvP8l60bTFF2ji6pBpP8C5GdMHcoeN8YQ+C/wfuoxzxR4Fajb3E+RkiGWMC9q0Df6AZf5DeUzrWUsjmTcLdHn8+/YNRUmu9ZyhjMrK0xRwtyguSs0xfjjFI+bETNl026OwyNs6yZTFFcjqv/xmTHngtFRdBqFXUJX4CsXX9bb7x1GAdFDgxDADYaWbuBAsCqUKnzkqkZPZIKHht0NZzpANMWgzGzu9D04swpcAnkW64jxlCqr89/keeKujadegjI=
+      on:
+        tags: true

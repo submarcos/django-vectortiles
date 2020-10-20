@@ -1,0 +1,5 @@
+include *.md
+recursive-include vectortiles *.md
+recursive-include vectortiles *.py
+recursive-exclude test_vectortiles *
+recursive-exclude vectortiles/tests/ *

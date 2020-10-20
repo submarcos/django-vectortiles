@@ -1,0 +1,10 @@
+[report]
+omit =
+    */tests*
+    */migrations*
+    */lib*
+    test_vectortiles/*
+    doc/*
+    manage.py
+
+ignore_errors = true
