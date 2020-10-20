@@ -1,3 +1,3 @@
-Generate vector tiles with PostgreSQL and postgis 2.4+
+Generate MapBox VectorTiles from GeoDjango models
 
-Serve them with dango
+With mapbox_vector_tile or directly with PostgreSQL/PostGIS 2.4+
