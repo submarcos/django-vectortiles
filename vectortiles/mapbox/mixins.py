@@ -25,8 +25,11 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
         final_buffer = 4 * pixel
         bbox = Polygon.from_bbox((west - final_buffer, south - final_buffer, east + final_buffer, north + final_buffer))
 
-        features = features.filter(geom__intersects=bbox)
-        features = features.annotate(clipped=Intersection('geom', bbox))
+        filters = {
+            f"{self.vector_tile_geom_name}__intersects": bbox
+        }
+        features = features.filter(**filters)
+        features = features.annotate(clipped=Intersection(self.vector_tile_geom_name, bbox))
 
         tile = {
             "name": self.get_vector_tile_layer_name(),
