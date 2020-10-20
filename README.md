@@ -49,7 +49,7 @@ from yourapp import views
 
 urlpatterns = [
     ...
-    path('tiles/<int:z>/<int:x>/<int:y>', views.PostGISFeatureView.as_view(), name="feature-tile"),
+    path('tiles/<int:z>/<int:x>/<int:y>', views.FeatureTileView.as_view(), name="feature-tile"),
     ...
 ]
 ```
