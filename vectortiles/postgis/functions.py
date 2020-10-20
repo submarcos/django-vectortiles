@@ -4,6 +4,14 @@ from django.db.models import Func
 from django.utils.functional import cached_property
 
 
+class RawGeometryField(GeometryField):
+    def select_format(self, compiler, sql, params):
+        """
+        Override compiler format to not cast as bytea
+        """
+        return sql, params
+
+
 class MakeEnvelope(Func):
     function = "ST_MAKEENVELOPE"
     output_field = GeometryField()
@@ -14,4 +22,4 @@ class AsMVTGeom(GeoFunc):
 
     @cached_property
     def output_field(self):
-        return GeometryField(srid=3857)
+        return RawGeometryField(srid=3857)
