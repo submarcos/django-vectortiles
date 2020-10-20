@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView
 from test_vectortiles.test_app.models import Feature, Layer
 from vectortiles.mapbox.views import MapboxVectorTileVew
 from vectortiles.mixins import BaseVectorTileView
-from vectortiles.postgis.views import PostgisVectorTileVew
+from vectortiles.postgis.views import PostgisVectorTileView
 
 # test at feature level and at layer level
 
@@ -29,13 +29,13 @@ class MapboxLayerView(MapboxVectorTileVew, DetailView):
         return BaseVectorTileView.get(self, request=request, z=kwargs.get('z'), x=kwargs.get('x'), y=kwargs.get('y'))
 
 
-class PostGISFeatureView(PostgisVectorTileVew, ListView):
+class PostGISFeatureView(PostgisVectorTileView, ListView):
     model = Feature
     vector_tile_layer_name = "features"
     vector_tile_fields = ('name', )
 
 
-class PostGISLayerView(PostgisVectorTileVew, DetailView):
+class PostGISLayerView(PostgisVectorTileView, DetailView):
     model = Layer
     vector_tile_fields = ('name', )
 

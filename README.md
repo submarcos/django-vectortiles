@@ -1,3 +1,81 @@
-Generate MapBox VectorTiles from GeoDjango models
+[![Build Status](https://travis-ci.org/submarcos/django-vectortiles.svg?branch=master)](https://travis-ci.org/submarcos/django-vectortiles/)
+[![codecov](https://codecov.io/gh/submarcos/django-vectortiles/branch/master/graph/badge.svg)](https://codecov.io/gh/submarcos/django-vectortiles)
 
-With mapbox_vector_tile or directly with PostgreSQL/PostGIS 2.4+
+![Python Version](https://img.shields.io/badge/python-%3E%3D%203.6-blue.svg)
+![Django Version](https://img.shields.io/badge/django-%3E%3D%202.2-blue.svg)
+
+#Generate MapBox VectorTiles from GeoDjango models
+
+##With mapbox_vector_tile or directly with PostgreSQL/PostGIS 2.4+
+
+
+###Simple model example:
+
+```python
+# in your view file
+
+from django.views.generic import ListView
+from vectortiles.postgis.views import PostgisVectorTileView
+from yourapp.models import Feature
+
+
+class FeatureTileView(PostgisVectorTileView, ListView):
+    model = Feature
+    vector_tile_layer_name = "features"
+    vector_tile_fields = ('other_field_to_include', )
+
+
+# in your urls file
+from django.urls import path
+from yourapp import views
+
+
+urlpatterns = [
+    ...
+    path('tiles/<int:z>/<int:x>/<int:y>', views.PostGISFeatureView.as_view(), name="feature-tile"),
+    ...
+]
+```
+
+###Related model example:
+
+```python
+# in your view file
+
+from django.views.generic import DetailView
+from vectortiles.mixins import BaseVectorTileView
+from vectortiles.postgis.views import PostgisVectorTileView
+from yourapp.models import Layer
+
+
+class LayerTileView(PostgisVectorTileView, DetailView):
+    model = Layer
+    vector_tile_fields = ('other_field_to_include', )
+
+    def get_vector_tile_layer_name(self):
+        return self.get_object().name
+
+    def get_vector_tile_queryset(self):
+        return self.get_object().features.all()
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return BaseVectorTileView.get(self,request=request, z=kwargs.get('z'), x=kwargs.get('x'), y=kwargs.get('y'))
+
+
+# in your urls file
+from django.urls import path
+from yourapp import views
+
+
+urlpatterns = [
+    ...
+    path('layer/<int:pk>/tile/<int:z>/<int:x>/<int:y>', views.LayerTileView.as_view(), name="layer-tile"),
+    ...
+]
+```
+
+
+### Usage with DRF
+
+django-vectortiles can be used with DRF, use right BaseMixin and action on viewsets, or directly a GET method in an APIView.
