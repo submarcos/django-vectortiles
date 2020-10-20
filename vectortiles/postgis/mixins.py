@@ -22,7 +22,6 @@ class PostgisBaseVectorTile(BaseVectorTileMixin):
                                                              buffer,
                                                              clip_geom))
         fields = self.vector_tile_fields + ("geom_prepared", ) if self.vector_tile_fields else ("geom_prepared", )
-        print(fields)
         # keep values to include in tile (extra included_fields + geometry)
         features = features.values(*fields)
         # generate MVT
