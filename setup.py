@@ -47,13 +47,10 @@ setup(
     tests_require=test_require,
     extras_require={
         'dev': test_require + [
-            'django-debug-toolbar'
+            'django-debug-toolbar', 'mapbox_vector_tile', 'psycopg2'
         ],
         'mapbox': [
             'mapbox_vector_tile'
         ],
-        'postgis': [
-            'psycopg2'
-        ]
     }
 )

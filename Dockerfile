@@ -15,8 +15,5 @@ WORKDIR /code/src
 
 # Install dev requirements
 RUN /code/venv/bin/pip3 install --no-cache-dir .[dev] -U
-# install optionnal mapbox libraries for dev and test
-RUN /code/venv/bin/pip3 install --no-cache-dir .[mapbox] -U
-RUN /code/venv/bin/pip3 install --no-cache-dir .[postgis] -U
 
 RUN . /code/venv/bin/activate
