@@ -99,6 +99,7 @@ Just import and use vectortiles.mapbox.view.MapboxVectorTileVew instead of vecto
 ### Usage with DRF
 
 django-vectortiles can be used with DRF, use right BaseMixin and action on viewsets, or directly a GET method in an APIView.
+
 -> vectortiles.mapbox.mixins.MapboxBaseVectorTile and vectortiles.postgis.mixins.PostgisBaseVectorTile
 
 ### Development
@@ -112,10 +113,12 @@ docker-compose build
 docker-compose run /code/venv/bin/python ./manage.py test
 ```
 
-### In local
+### Local
 
-Install django requirements
-Install geodjango requirements
-Have a postgresql / postgis 2.4+ enabled database
-Use a virtualenv
+* Install python and django requirements (python 3.6+, django 2.2+)
+* Install geodjango requirements
+* Have a postgresql / postgis 2.4+ enabled database
+* Use a virtualenv
+```bash
 pip install .[dev] -U
+```
