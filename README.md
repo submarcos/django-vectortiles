@@ -26,7 +26,28 @@ pip install django-vectortiles[mapbox]
 * This will incude mapbox_vector_tiles package and its dependencies
 * Use only vectortiles.mapbox
 
-### Simple model example:
+### Examples
+
+* assuming you have django.contrib.gis in your INSTALLED_APPS and a gis compatible database backend
+
+```python
+# in your app models.py
+
+from django.contrib.gis.db import models
+
+
+class Layer(models.Model):
+    name = models.CharField(max_length=250)
+
+
+class Feature(models.Model):
+    geom = models.GeometryField(srid=4326)
+    name = models.CharField(max_length=250)
+    layer = models.ForeignKey(Layer, on_delete=models.CASCADE, related_name='features')
+```
+
+
+#### Simple model:
 
 ```python
 # in your view file
@@ -54,7 +75,7 @@ urlpatterns = [
 ]
 ```
 
-### Related model example:
+#### Related model:
 
 ```python
 # in your view file
@@ -92,19 +113,19 @@ urlpatterns = [
 ]
 ```
 
-### Usage without PostgreSQL / PostGIS
+#### Usage without PostgreSQL / PostGIS
 
 Just import and use vectortiles.mapbox.view.MapboxVectorTileVew instead of vectortiles.postgis.view.PostgisVectorTileView
 
-### Usage with DRF
+#### Usage with DRF
 
 django-vectortiles can be used with DRF, use right BaseMixin and action on viewsets, or directly a GET method in an APIView.
 
 -> vectortiles.mapbox.mixins.MapboxBaseVectorTile and vectortiles.postgis.mixins.PostgisBaseVectorTile
 
-### Development
+#### Development
 
-#### With docker and docker-compose
+##### With docker and docker-compose
 
 ```bash
 docker pull makinacorpus/geodjango:bionic-3.6
@@ -113,7 +134,7 @@ docker-compose build
 docker-compose run /code/venv/bin/python ./manage.py test
 ```
 
-### Local
+##### Local
 
 * Install python and django requirements (python 3.6+, django 2.2+)
 * Install geodjango requirements

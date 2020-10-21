@@ -12,6 +12,7 @@ test_require = [
     'factory-boy',
     'flake8',
     'coverage',
+    'psycopg2'
 ]
 
 setup(
@@ -47,8 +48,9 @@ setup(
     ],
     tests_require=test_require,
     extras_require={
+        'test': test_require,
         'dev': test_require + [
-            'django-debug-toolbar', 'mapbox_vector_tile', 'psycopg2'
+            'django-debug-toolbar', 'mapbox_vector_tile',
         ],
         'mapbox': [
             'mapbox_vector_tile'

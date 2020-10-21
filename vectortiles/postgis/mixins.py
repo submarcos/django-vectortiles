@@ -1,4 +1,5 @@
 from django.contrib.gis.db.models.functions import Transform
+from django.contrib.gis.geos import Polygon
 from django.db import connection
 
 from vectortiles.postgis.functions import MakeEnvelope, AsMVTGeom
@@ -19,7 +20,7 @@ class PostgisBaseVectorTile(BaseVectorTileMixin):
         }
         features = features.filter(**filters)
         # annotate prepared geometry for MVT
-        features = features.annotate(geom_prepared=AsMVTGeom(self.vector_tile_geom_name,
+        features = features.annotate(geom_prepared=AsMVTGeom(Transform(self.vector_tile_geom_name, 3857),
                                                              MakeEnvelope(xmin, ymin, xmax, ymax, 3857),
                                                              extent,
                                                              buffer,

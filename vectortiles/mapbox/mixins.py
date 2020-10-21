@@ -1,7 +1,7 @@
 import math
 
 import mapbox_vector_tile
-from django.contrib.gis.db.models.functions import Intersection
+from django.contrib.gis.db.models.functions import Intersection, Transform
 from django.contrib.gis.geos import Polygon
 
 from vectortiles.mixins import BaseVectorTileMixin
@@ -24,24 +24,25 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
         pixel = self.pixel_length(z)
         final_buffer = 4 * pixel
         bbox = Polygon.from_bbox((west - final_buffer, south - final_buffer, east + final_buffer, north + final_buffer))
+        bbox.srid = 3857
 
         filters = {
             f"{self.vector_tile_geom_name}__intersects": bbox
         }
         features = features.filter(**filters)
-        features = features.annotate(clipped=Intersection(self.vector_tile_geom_name, bbox))
-
-        tile = {
-            "name": self.get_vector_tile_layer_name(),
-            "features": [
-                {
-                    "geometry": feature.clipped.simplify(pixel, preserve_topology=True).wkb.tobytes(),
-                    "properties": {
-                        key: getattr(feature, key) for key in self.vector_tile_fields if
-                        self.vector_tile_fields
+        features = features.annotate(clipped=Intersection(Transform(self.vector_tile_geom_name, 3857), bbox))
+        if features:
+            tile = {
+                "name": self.get_vector_tile_layer_name(),
+                "features": [
+                    {
+                        "geometry": feature.clipped.simplify(pixel, preserve_topology=True).wkb.tobytes(),
+                        "properties": {
+                            key: getattr(feature, key) for key in self.vector_tile_fields if
+                            self.vector_tile_fields
+                        }
                     }
-                }
-                for feature in features
-            ],
-        }
-        return mapbox_vector_tile.encode(tile, quantize_bounds=(west, south, east, north))
+                    for feature in features
+                ],
+            }
+            return mapbox_vector_tile.encode(tile, quantize_bounds=(west, south, east, north))

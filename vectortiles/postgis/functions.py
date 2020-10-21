@@ -7,8 +7,10 @@ from django.utils.functional import cached_property
 class RawGeometryField(GeometryField):
     def select_format(self, compiler, sql, params):
         """
-        Override compiler format to not cast as bytea
+        Override compiler format to not cast as bytea.
+        AsMVTGeom is used in a custom sql raw. Generated queryset should not be executed without that.
         """
+        print(sql, params)
         return sql, params
 
 
@@ -22,4 +24,5 @@ class AsMVTGeom(GeoFunc):
 
     @cached_property
     def output_field(self):
+        """ AsMVTGeom return always a reprojected geometryin 3857 """
         return RawGeometryField(srid=3857)
