@@ -1,5 +1,4 @@
 from django.contrib.gis.db.models.functions import Transform
-from django.contrib.gis.geos import Polygon
 from django.db import connection
 
 from vectortiles.postgis.functions import MakeEnvelope, AsMVTGeom

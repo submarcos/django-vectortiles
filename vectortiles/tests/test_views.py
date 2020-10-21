@@ -1,8 +1,6 @@
 import mapbox_vector_tile
-import mercantile
 from django.test import TestCase
 from django.urls import reverse
-from mercantile import Tile
 
 from test_vectortiles.test_app.models import Layer, Feature
 
