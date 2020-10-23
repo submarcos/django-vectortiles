@@ -53,11 +53,11 @@ class Feature(models.Model):
 # in your view file
 
 from django.views.generic import ListView
-from vectortiles.postgis.views import PostgisVectorTileView
+from vectortiles.postgis.views import MVTView
 from yourapp.models import Feature
 
 
-class FeatureTileView(PostgisVectorTileView, ListView):
+class FeatureTileView(MVTView, ListView):
     model = Feature
     vector_tile_layer_name = "features"
     vector_tile_fields = ('other_field_to_include', )
@@ -82,11 +82,11 @@ urlpatterns = [
 
 from django.views.generic import DetailView
 from vectortiles.mixins import BaseVectorTileView
-from vectortiles.postgis.views import PostgisVectorTileView
+from vectortiles.postgis.views import MVTView
 from yourapp.models import Layer
 
 
-class LayerTileView(PostgisVectorTileView, DetailView):
+class LayerTileView(MVTView, DetailView):
     model = Layer
     vector_tile_fields = ('other_field_to_include', )
 
@@ -115,7 +115,7 @@ urlpatterns = [
 
 #### Usage without PostgreSQL / PostGIS
 
-Just import and use vectortiles.mapbox.view.MapboxVectorTileVew instead of vectortiles.postgis.view.PostgisVectorTileView
+Just import and use vectortiles.mapbox.view.MVTView instead of vectortiles.postgis.view.MVTView
 
 #### Usage with DRF
 
