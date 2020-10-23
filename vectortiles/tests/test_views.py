@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from test_vectortiles.test_app.models import Layer, Feature
+from vectortiles.views import TileJSONView
 
 
 class VectorTileBaseTest(TestCase):
@@ -176,3 +177,9 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
              },
             content
         )
+
+    def test_tilejson_view_default(self):
+        class TestView(TileJSONView):
+            tile_url = "test"
+        instance = TestView()
+        self.assertEqual(instance.tile_url, instance.get_tile_url())
