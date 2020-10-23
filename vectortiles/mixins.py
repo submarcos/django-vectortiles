@@ -39,7 +39,7 @@ class BaseVectorTileMixin:
 
 
 class BaseVectorTileView:
-    content_type = None
+    content_type = "application/vnd.mapbox-vector-tile"
 
     def get(self, request, z, x, y):
         content = self.get_tile(x, y, z, extent=self.vector_tile_extent, buffer=self.vector_tile_buffer, clip_geom=True)

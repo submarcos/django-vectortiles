@@ -1,8 +1,8 @@
 from django.views import View
 
-from vectortiles.postgis.mixins import PostgisBaseVectorTile
 from vectortiles.mixins import BaseVectorTileView
+from vectortiles.postgis.mixins import PostgisBaseVectorTile
 
 
-class PostgisVectorTileView(BaseVectorTileView, PostgisBaseVectorTile, View):
-    content_type = "application/x-protobuf"
+class MVTView(BaseVectorTileView, PostgisBaseVectorTile, View):
+    pass
