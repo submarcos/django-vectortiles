@@ -24,5 +24,4 @@ class AsMVTGeom(GeoFunc):
 
     @cached_property
     def output_field(self):
-        """ AsMVTGeom return always a reprojected geometryin 3857 """
-        return RawGeometryField(srid=3857)
+        return RawGeometryField()

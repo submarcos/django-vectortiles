@@ -13,9 +13,7 @@ class BaseVectorTileMixin:
     vector_tile_buffer = 256
 
     def get_bounds(self, x, y, z):
-        bounds = mercantile.bounds(x, y, z)
-        xmin, ymin = mercantile.xy(bounds.west, bounds.south)
-        xmax, ymax = mercantile.xy(bounds.east, bounds.north)
+        xmin, ymin, xmax, ymax = mercantile.xy_bounds(x, y, z)
         return xmin, ymin, xmax, ymax
 
     def get_vector_tile_queryset(self):
