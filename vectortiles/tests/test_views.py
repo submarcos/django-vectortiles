@@ -5,7 +5,7 @@ from django.urls import reverse
 from test_vectortiles.test_app.models import Layer, Feature
 
 
-class VectorTileTestCase(TestCase):
+class VectorTileBaseTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.layer = Layer.objects.create(
@@ -22,6 +22,8 @@ class VectorTileTestCase(TestCase):
             layer=cls.layer
         )
 
+
+class VectorTileTestCase(VectorTileBaseTest):
     def test_mapbox_layer(self):
         self.maxDiff = None
         response = self.client.get(reverse('layer-mapbox', args=(self.layer.pk, 0, 0, 0)))
@@ -87,3 +89,90 @@ class VectorTileTestCase(TestCase):
                              {'geometry': {'type': 'LineString', 'coordinates': [[2048, 2048], [2059, 2059]]},
                               'properties': {'name': 'feat2'}, 'id': 0, 'type': 2}]
             }})
+
+
+class VectorTileTileJSONTestCase(VectorTileBaseTest):
+    def test_mapbox_layer(self):
+        self.maxDiff = None
+        response = self.client.get(reverse('layer-mapbox-tilejson', args=(self.layer.pk, )))
+        self.assertEqual(response.status_code, 200)
+        content = response.json()
+        self.assertDictEqual(
+            content,
+            {'attribution': '© Makina Corpus',
+             'description': 'generated from mapbox library',
+             'maxzoom': 22,
+             'minzoom': 0,
+             'name': "Layer's features tileset",
+             'tilejson': '3.0.0',
+             'tiles': ['/layer/2/mapbox/tile/{z}/{x}/{y}'],
+             'vector_layers': [{'description': 'Feature layer',
+                                'id': 'features',
+                                'maxzoom': 22,
+                                'minzoom': 0, }]
+             }
+        )
+
+    def test_mapbox_features(self):
+        self.maxDiff = None
+        response = self.client.get(reverse('feature-mapbox-tilejson'))
+        self.assertEqual(response.status_code, 200)
+        content = response.json()
+        self.assertDictEqual(
+            content,
+            {'attribution': '© Makina Corpus',
+             'description': 'generated from mapbox library',
+             'maxzoom': 22,
+             'minzoom': 0,
+             'name': 'Feature tileset',
+             'tilejson': '3.0.0',
+             'tiles': ['/features/mapbox/tile/{z}/{x}/{y}'],
+             'vector_layers': [{'description': 'Feature layer',
+                                'id': 'features',
+                                'maxzoom': 22,
+                                'minzoom': 0, }]
+             }
+        )
+
+    def test_postgis_layer(self):
+        self.maxDiff = None
+        response = self.client.get(reverse('layer-postgis-tilejson', args=(self.layer.pk, )))
+        self.assertEqual(response.status_code, 200)
+        content = response.json()
+        self.assertDictEqual(
+            content,
+            {'attribution': '© Makina Corpus',
+             'description': 'generated from postgis database',
+             'maxzoom': 22,
+             'minzoom': 0,
+             'name': "Layer's features tileset",
+             'tilejson': '3.0.0',
+             'tiles': ['/layer/2/postgis/tile/{z}/{x}/{y}'],
+             'vector_layers': [{'description': 'Feature layer',
+                                'id': 'features',
+                                'maxzoom': 22,
+                                'minzoom': 0, }]
+             }
+        )
+
+    def test_postgis_features(self):
+        self.maxDiff = None
+        response = self.client.get(reverse('feature-postgis-tilejson'))
+        self.assertEqual(response.status_code, 200)
+        content = response.json()
+        self.assertDictEqual(
+            content,
+            {'attribution': '© Makina Corpus',
+             'description': 'generated from postgis database',
+             'maxzoom': 22,
+             'minzoom': 0,
+             'name': 'Feature tileset',
+             'tilejson': '3.0.0',
+             'tiles': ['/features/postgis/tile/{z}/{x}/{y}'],
+             'vector_layers': [{'description': 'Feature layer',
+                                'id': 'features',
+                                'maxzoom': 22,
+                                'minzoom': 0, }]
+             },
+            content
+        )

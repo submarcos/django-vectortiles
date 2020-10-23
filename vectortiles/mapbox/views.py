@@ -4,5 +4,5 @@ from vectortiles.mapbox.mixins import MapboxBaseVectorTile
 from vectortiles.mixins import BaseVectorTileView
 
 
-class MVTView(BaseVectorTileView, MapboxBaseVectorTile):
+class MVTView(BaseVectorTileView, MapboxBaseVectorTile, View):
     pass
