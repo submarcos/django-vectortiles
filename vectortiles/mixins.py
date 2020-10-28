@@ -68,7 +68,7 @@ class VectorLayer:
         return {
             'id': self.get_vector_tile_layer_id(),
             'description': self.get_vector_tile_layer_description(),
-            # 'fields': self.layer_fields(layer),
+            'fields': {},  # self.layer_fields(layer),
             'minzoom': self.get_vector_tile_layer_min_zoom(),
             'maxzoom': self.get_vector_tile_layer_max_zoom(),
         }

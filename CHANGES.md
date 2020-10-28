@@ -4,6 +4,8 @@ CHANGELOG
 0.0.2.dev0  (XXXX-XX-XX)
 ------------------------
 
+* Fix required 'fields' key in tilejson. Will be filled later
+
 
 0.0.1       (2020-10-22)
 ------------------------
