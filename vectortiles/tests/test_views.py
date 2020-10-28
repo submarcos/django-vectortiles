@@ -108,6 +108,7 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
              'tilejson': '3.0.0',
              'tiles': ['/layer/2/mapbox/tile/{z}/{x}/{y}'],
              'vector_layers': [{'description': 'Feature layer',
+                                'fields': {},
                                 'id': 'features',
                                 'maxzoom': 22,
                                 'minzoom': 0, }]
@@ -129,6 +130,7 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
              'tilejson': '3.0.0',
              'tiles': ['/features/mapbox/tile/{z}/{x}/{y}'],
              'vector_layers': [{'description': 'Feature layer',
+                                'fields': {},
                                 'id': 'features',
                                 'maxzoom': 22,
                                 'minzoom': 0, }]
@@ -150,6 +152,7 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
              'tilejson': '3.0.0',
              'tiles': ['/layer/2/postgis/tile/{z}/{x}/{y}'],
              'vector_layers': [{'description': 'Feature layer',
+                                'fields': {},
                                 'id': 'features',
                                 'maxzoom': 22,
                                 'minzoom': 0, }]
@@ -171,6 +174,7 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
              'tilejson': '3.0.0',
              'tiles': ['/features/postgis/tile/{z}/{x}/{y}'],
              'vector_layers': [{'description': 'Feature layer',
+                                'fields': {},
                                 'id': 'features',
                                 'maxzoom': 22,
                                 'minzoom': 0, }]
