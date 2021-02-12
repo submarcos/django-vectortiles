@@ -15,7 +15,10 @@ class RawGeometryField(GeometryField):
 
 class MakeEnvelope(Func):
     function = "ST_MAKEENVELOPE"
-    output_field = GeometryField()
+
+    def __init__(self, *expressions, output_field=None, **extra):
+        super().__init__(*expressions, output_field=None, **extra)
+        self.output_field = GeometryField(srid=expressions[4])
 
 
 class AsMVTGeom(GeoFunc):
