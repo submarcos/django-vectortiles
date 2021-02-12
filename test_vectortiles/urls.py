@@ -24,6 +24,8 @@ urlpatterns = [
     # feature level
     path('features/postgis/tile/<int:z>/<int:x>/<int:y>', views.PostGISFeatureView.as_view(),
          name="feature-postgis"),
+    path('features/postgis/tile/date/<int:z>/<int:x>/<int:y>', views.PostGISFeatureWithDateView.as_view(),
+         name="feature-date-postgis"),
     path('features/postgis/tile/{z}/{x}/{y}', page_not_found,
          name="feature-postgis-pattern"),
     path('features/postgis/tilejson', views.PostGISTileJSONFeatureView.as_view(),
