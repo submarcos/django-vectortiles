@@ -38,6 +38,12 @@ class PostGISFeatureView(PostgisMVTView, ListView):
     vector_tile_fields = ('name', )
 
 
+class PostGISFeatureWithDateView(PostgisMVTView, ListView):
+    queryset = Feature.objects.filter(date="2020-07-07")
+    vector_tile_layer_name = "features"
+    vector_tile_fields = ('name', )
+
+
 class PostGISLayerView(PostgisMVTView, DetailView):
     model = Layer
     vector_tile_fields = ('name', )

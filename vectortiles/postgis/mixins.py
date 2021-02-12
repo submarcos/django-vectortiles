@@ -28,8 +28,9 @@ class PostgisBaseVectorTile(BaseVectorTileMixin):
         # keep values to include in tile (extra included_fields + geometry)
         features = features.values(*fields)
         # generate MVT
+        sql, params = features.query.sql_with_params()
         with connection.cursor() as cursor:
-            cursor.execute("SELECT ST_ASMVT(subquery.*, %s, %s, %s) FROM ({}) as subquery".format(features.query),
-                           params=[self.get_vector_tile_layer_name(), extent, "geom_prepared"])
+            cursor.execute("SELECT ST_ASMVT(subquery.*, %s, %s, %s) FROM ({}) as subquery".format(sql),
+                           params=[self.get_vector_tile_layer_name(), extent, "geom_prepared", *params])
             row = cursor.fetchone()[0]
             return row.tobytes() if row else None
