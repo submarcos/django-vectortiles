@@ -10,7 +10,6 @@ class RawGeometryField(GeometryField):
         Override compiler format to not cast as bytea.
         AsMVTGeom is used in a custom sql raw. Generated queryset should not be executed without that.
         """
-        print(sql, params)
         return sql, params
 
 
