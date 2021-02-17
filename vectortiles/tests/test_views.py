@@ -27,6 +27,16 @@ class VectorTileBaseTest(TestCase):
 
 
 class VectorTileTestCase(VectorTileBaseTest):
+    def test_num_queries_equals_one(self):
+        self.maxDiff = None
+        with self.assertNumQueries(1):
+            self.client.get(
+                reverse(
+                    'feature-postgis-with-manual-vector-tile-queryset',
+                    args=(0, 0, 0)
+                )
+            )
+
     def test_mapbox_layer(self):
         self.maxDiff = None
         response = self.client.get(reverse('layer-mapbox', args=(self.layer.pk, 0, 0, 0)))
