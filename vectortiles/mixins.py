@@ -19,7 +19,7 @@ class BaseVectorTileMixin:
         return xmin, ymin, xmax, ymax
 
     def get_vector_tile_queryset(self):
-        return self.vector_tile_queryset if self.vector_tile_queryset else self.get_queryset()
+        return self.vector_tile_queryset if self.vector_tile_queryset is not None else self.get_queryset()
 
     def get_vector_tile_layer_name(self):
         return self.vector_tile_layer_name
