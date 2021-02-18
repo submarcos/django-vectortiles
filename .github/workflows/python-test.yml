@@ -1,0 +1,77 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python / Django matrix test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        python-version: ['3.6']
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install flake8
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Lint with flake8
+      run: |
+        flake8 geostore test_geostore
+
+  build:
+    runs-on: ubuntu-18.04
+    needs: [lint]
+    strategy:
+      matrix:
+        python-version: ['3.6', '3.9']
+        django-version: [2.2.*, 3.2a1]
+
+    services:
+      postgres:
+        image: postgis/postgis:10-2.5
+        env:
+          POSTGRES_PASSWORD: travis_ci_test
+          POSTGRES_USER: travis_ci_test
+          POSTGRES_DB: travis_ci_test
+        ports:
+          - 5432:5432
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        sudo apt-get -yq install libproj-dev binutils gdal-bin libgdal-dev
+        python -m pip install --upgrade pip setuptools wheel
+        pip install .[dev] -U
+        if [[ ${{ matrix.django-version }} == dev ]]; then
+          pip install -e git+https://github.com/django/django@master#egg=django;
+        else
+          pip install Django==${{ matrix.django-version }} -U;
+        fi
+    - name: Run migrations
+      run: |
+        ./manage.py makemigrations --check
+        ./manage.py migrate
+    - name: Test with coverage
+      run: |
+        coverage run ./manage.py test
+    - name: Coverage upload
+      run: |
+        pip install codecov
+        codecov
