@@ -14,8 +14,8 @@ class PostgisBaseVectorTile(BaseVectorTileMixin):
 
         # keep features intersecting tile
         filters = {
-            f"{self.vector_tile_geom_name}__intersects": Transform(MakeEnvelope(xmin, ymin, xmax, ymax, 3857),
-                                                                   4326)
+            # GeoFuncMixin implicitly transforms to SRID of geom
+            f"{self.vector_tile_geom_name}__intersects": MakeEnvelope(xmin, ymin, xmax, ymax, 3857)
         }
         features = features.filter(**filters)
         # annotate prepared geometry for MVT
