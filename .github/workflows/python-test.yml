@@ -66,8 +66,8 @@ jobs:
         fi
     - name: Run migrations
       run: |
-        ./manage.py makemigrations --check
-        ./manage.py migrate
+        python3 ./manage.py makemigrations --check
+        python3 ./manage.py migrate
     - name: Test with coverage
       run: |
         coverage run ./manage.py test
