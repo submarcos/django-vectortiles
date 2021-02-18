@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/submarcos/django-vectortiles.svg?branch=master)](https://travis-ci.org/submarcos/django-vectortiles/)
-[![codecov](https://codecov.io/gh/submarcos/django-vectortiles/branch/master/graph/badge.svg)](https://codecov.io/gh/submarcos/django-vectortiles)
+![Tests](https://github.com/submarcos/django-vectortiles/workflows/Python%20/%20Django%20matrix%20test/badge.svg)
+[![Coverage](https://codecov.io/gh/submarcos/django-vectortiles/branch/master/graph/badge.svg)](https://codecov.io/gh/submarcos/django-vectortiles)
 
 ![Python Version](https://img.shields.io/badge/python-%3E%3D%203.6-blue.svg)
 ![Django Version](https://img.shields.io/badge/django-%3E%3D%202.2-blue.svg)
