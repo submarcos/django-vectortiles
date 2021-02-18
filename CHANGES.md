@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-0.0.2+dev0  (XXXX-XX-XX)
+0.0.3       (2021-02-18)
 ------------------------
 
 * Delete useless Envelope transformation because django implicitly transform on intersects lookup (thanks to StefanBrand)
