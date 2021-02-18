@@ -4,7 +4,9 @@ CHANGELOG
 0.0.2+dev0  (XXXX-XX-XX)
 ------------------------
 
-*
+* Delete useless Envelope transformation because django implicitly transform on intersects lookup (thanks to StefanBrand)
+* Avoid useless queryset evaluation in some cases (thanks to StefanBrand)
+
 
 0.0.2       (2021-02-12)
 ------------------------
