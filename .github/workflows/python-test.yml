@@ -56,8 +56,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        sudo apt-get -yq install libproj-dev binutils gdal-bin libgdal-dev
-        python -m pip install --upgrade pip setuptools wheel
+        sudo apt-get -yq install libproj-dev binutils gdal-bin
+        python3 -m pip install --upgrade pip setuptools wheel
         pip install .[dev] -U
         if [[ ${{ matrix.django-version }} == dev ]]; then
           pip install -e git+https://github.com/django/django@master#egg=django;
