@@ -25,6 +25,10 @@ class PostgisBaseVectorTile(BaseVectorTileMixin):
                                                              buffer,
                                                              clip_geom))
         fields = self.vector_tile_fields + ("geom_prepared", ) if self.vector_tile_fields else ("geom_prepared", )
+        # limit feature number if limit provided
+        limit = self.get_vector_tile_queryset_limit()
+        if limit:
+            features = features[:limit]
         # keep values to include in tile (extra included_fields + geometry)
         features = features.values(*fields)
         # generate MVT
