@@ -12,7 +12,7 @@ test_require = [
     'factory-boy',
     'flake8',
     'coverage',
-    'psycopg2'
+    'psycopg2-binary'  # for dev and test only. in production, use psycopg2
 ]
 
 setup(
@@ -40,6 +40,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
     python_requires='>=3.6',
     install_requires=[
@@ -50,7 +51,7 @@ setup(
     extras_require={
         'test': test_require,
         'dev': test_require + [
-            'django-debug-toolbar', 'mapbox_vector_tile',
+            'django-debug-toolbar', 'mapbox_vector_tile', 'sphinx-rtd-theme'
         ],
         'mapbox': [
             'mapbox_vector_tile'
