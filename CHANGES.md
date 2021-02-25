@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+
+0.1.0       (2021-02-25)
+------------------------
+
+First beta release
+
+* Add attribute to limit features in tile (unable to use a sliced queryset)
+
+
 0.0.3       (2021-02-18)
 ------------------------
 
