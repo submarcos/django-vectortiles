@@ -15,6 +15,7 @@ class MapboxFeatureView(MapboxMVTView, ListView):
     model = Feature
     vector_tile_layer_name = "features"
     vector_tile_fields = ('name', )
+    vector_tile_queryset_limit = 100
 
 
 class MapboxLayerView(MapboxMVTView, DetailView):
@@ -36,6 +37,7 @@ class PostGISFeatureView(PostgisMVTView, ListView):
     model = Feature
     vector_tile_layer_name = "features"
     vector_tile_fields = ('name', )
+    vector_tile_queryset_limit = 100
 
 
 class PostGISFeatureViewWithManualVectorTileQuerySet(PostgisMVTView, DetailView):

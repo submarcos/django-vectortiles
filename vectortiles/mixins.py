@@ -7,6 +7,7 @@ from django.http import HttpResponse
 class BaseVectorTileMixin:
     vector_tile_content_type = "application/x-protobuf"
     vector_tile_queryset = None
+    vector_tile_queryset_limit = None
     vector_tile_layer_name = None  # name for data layer in vector tile
     vector_tile_geom_name = "geom"  # geom field to consider in qs
     vector_tile_fields = None  # other fields to include from qs
@@ -20,6 +21,9 @@ class BaseVectorTileMixin:
 
     def get_vector_tile_queryset(self):
         return self.vector_tile_queryset if self.vector_tile_queryset is not None else self.get_queryset()
+
+    def get_vector_tile_queryset_limit(self):
+        return self.vector_tile_queryset_limit
 
     def get_vector_tile_layer_name(self):
         return self.vector_tile_layer_name

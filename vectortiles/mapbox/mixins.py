@@ -29,6 +29,10 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
             f"{self.vector_tile_geom_name}__intersects": bbox
         }
         features = features.filter(**filters)
+        # limit feature number if limit provided
+        limit = self.get_vector_tile_queryset_limit()
+        if limit:
+            features = features[:limit]
         features = features.annotate(clipped=Intersection(Transform(self.vector_tile_geom_name, 3857), bbox))
         if features:
             tile = {
