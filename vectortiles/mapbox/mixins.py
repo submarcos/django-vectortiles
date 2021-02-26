@@ -11,6 +11,11 @@ from vectortiles.mixins import BaseVectorTileMixin
 class MapboxBaseVectorTile(BaseVectorTileMixin):
     vector_tile_generation = "mapbox"
 
+    def pixel_length(self, zoom, size):
+        radius = 6378137
+        circum = 2 * math.pi * radius
+        return circum / size / 2 ** int(zoom)
+
     def get_tile(self, x, y, z):
         # get tile coordinates from x, y and z
         west, south, east, north = self.get_bounds(x, y, z)
@@ -28,7 +33,7 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
         if limit:
             features = features[:limit]
         features = features.annotate(clipped=Intersection(Transform(self.vector_tile_geom_name, 3857),
-                                                          bbox.buffer(self.vector_tile_buffer)) if self.vector_tile_clip_geom else F('geom'))
+                                                          bbox.buffer(self.pixel_length(z, self.vector_tile_buffer))) if self.vector_tile_clip_geom else F('geom'))
         if features:
             tile = {
                 "name": self.get_vector_tile_layer_name(),
