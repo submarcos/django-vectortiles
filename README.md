@@ -6,8 +6,9 @@
 
 # Generate MapBox VectorTiles from GeoDjango models
 
-## With mapbox_vector_tile or directly with PostgreSQL/PostGIS 2.4+
+## Directly with PostgreSQL/PostGIS 2.4+ or python native mapbox_vector_tile
 
+## (Read full documentation)[https://django-vectortiles.readthedocs.io/]
 
 ### Installation
 

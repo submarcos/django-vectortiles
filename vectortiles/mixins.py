@@ -5,6 +5,9 @@ from django.http import HttpResponse
 
 
 class BaseVectorTileMixin:
+    """
+    Base Mixin to handle vector tile generation
+    """
     vector_tile_content_type = "application/x-protobuf"
     vector_tile_queryset = None
     vector_tile_queryset_limit = None
@@ -16,30 +19,56 @@ class BaseVectorTileMixin:
     vector_tile_buffer = 256
 
     def get_bounds(self, x, y, z):
+        """
+        Get extent from xyz tile extent to 3857
+
+        :param x: longitude coordinate tile
+        :type x: int
+        :param y: latitude coordinate tile
+        :type y: int
+        :param z: zoom level
+        :type z: int
+
+        :return: xmin, ymin, xmax, ymax in 3857 coordinate system
+        :rtype: tuple
+        """
         xmin, ymin, xmax, ymax = mercantile.xy_bounds(x, y, z)
         return xmin, ymin, xmax, ymax
 
     def get_vector_tile_queryset(self):
+        """ Get feature queryset in tile dynamically """
         return self.vector_tile_queryset if self.vector_tile_queryset is not None else self.get_queryset()
 
     def get_vector_tile_queryset_limit(self):
+        """ Get feature limit by tile dynamically """
         return self.vector_tile_queryset_limit
 
     def get_vector_tile_layer_name(self):
+        """ Get layer name in tile dynamically """
         return self.vector_tile_layer_name
 
     def get_tile(self, x, y, z, extent=4096, buffer=256, clip_geom=True):
         """
-        Get bytearray representing a MapBoxVectorTile
+        Generate a mapbox vector tile as bytearray
+
         :param x: longitude coordinate tile
+        :type x: int
         :param y: latitude coordinate tile
+        :type y: int
         :param z: zoom level
-        :param extent: tile extent
-        :param buffer: buffer extent
-        :param clip_geom: clip geometries
-        :param geom_field: Geometry field name in subquery
+        :type z: int
+        :param extent: tile extent (default: 4096)
+        :type extent: int
+        :param buffer: buffer extent (default: 256)
+        :type buffer: int
+        :param clip_geom: clip geometries (default: True)
+        :type clip_geom: bool
+        :param geom_field: Geometry field name in subquery (default: "geom")
+        :type geom_field: str
         :param include_fields: extra fields to include in Vector tile
-        :return: mvt as bytearray
+        :type include_fields: tuple
+        :return: Mapbox Vector Tile
+        :rtype: bytearray
         """
         raise NotImplementedError()
 
@@ -131,9 +160,24 @@ class BaseTileJSONMixin:
 
 
 class BaseVectorTileView:
+    """ Base mixin to handle vector tile in a djang oView """
     content_type = "application/vnd.mapbox-vector-tile"
 
     def get(self, request, z, x, y):
+        """
+        Handle GET request to serve tile
+
+        :param request:
+        :type request: HttpRequest
+        :param x: longitude coordinate tile
+        :type x: int
+        :param y: latitude coordinate tile
+        :type y: int
+        :param z: zoom level
+        :type z: int
+
+        :rtype HTTPResponse
+        """
         content = self.get_tile(x, y, z, extent=self.vector_tile_extent, buffer=self.vector_tile_buffer, clip_geom=True)
         status = 200 if content else 204
         return HttpResponse(content, content_type=self.content_type, status=status)
