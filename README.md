@@ -8,7 +8,7 @@
 
 ## Directly with PostgreSQL/PostGIS 2.4+ or python native mapbox_vector_tile
 
-## (Read full documentation)[https://django-vectortiles.readthedocs.io/]
+## [Read full documentation](https://django-vectortiles.readthedocs.io/)
 
 ### Installation
 
