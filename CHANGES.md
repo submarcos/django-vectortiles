@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+0.1.0+dev   (XXXX-XX-XX)
+------------------------
+
+* Possibly breaking change:
+  * Base Mixin method get_tile use now class attributes for extent / buffer or clip_geom. Remove this parameters in your sub class method if needed.
+
+* Bug fixes:
+  * Correct usage for vector_tile_extent / vector_tile_buffer and vector_tile_clip_geom
+  * Clipped geom is now working for mapbox
+  
 
 0.1.0       (2021-02-25)
 ------------------------
