@@ -7,10 +7,12 @@ Welcome to django-vectortiles's documentation!
 ==============================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
+   installation.rst
+   usage.rst
 
+.. automodule:: vectortiles.mixins
+    :members:
 
 Indices and tables
 ==================

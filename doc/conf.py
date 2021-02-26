@@ -11,9 +11,8 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
-
+import sys
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 HERE = os.path.abspath(os.path.dirname(__file__))
@@ -23,7 +22,7 @@ copyright = '2021, Jean-Etienne Castagnede'
 author = 'Jean-Etienne Castagnede'
 
 # The full version, including alpha/beta/rc tags
-release = open(os.path.join(HERE, '..','vectortiles', 'VERSION.md')).read().strip()
+release = open(os.path.join(HERE, '..', 'vectortiles', 'VERSION.md')).read().strip()
 
 
 # -- General configuration ---------------------------------------------------
@@ -32,7 +31,9 @@ release = open(os.path.join(HERE, '..','vectortiles', 'VERSION.md')).read().stri
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx_rtd_theme"
+    "sphinx.ext.autodoc",
+    "sphinx_rtd_theme",
+    'sphinx.ext.coverage',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
