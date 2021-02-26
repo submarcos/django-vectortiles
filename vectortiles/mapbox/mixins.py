@@ -3,6 +3,7 @@ import math
 import mapbox_vector_tile
 from django.contrib.gis.db.models.functions import Intersection, Transform
 from django.contrib.gis.geos import Polygon
+from django.db.models import F
 
 from vectortiles.mixins import BaseVectorTileMixin
 
@@ -31,8 +32,11 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
         limit = self.get_vector_tile_queryset_limit()
         if limit:
             features = features[:limit]
-        features = features.annotate(clipped=Intersection(Transform(self.vector_tile_geom_name, 3857),
-                                                          bbox.buffer(self.vector_tile_buffer)))
+        if self.vector_tile_clip_geom:
+            features = features.annotate(clipped=Intersection(Transform(self.vector_tile_geom_name, 3857),
+                                                              bbox.buffer(self.vector_tile_buffer)))
+        else:
+            features.annotate(clipped=F('geom'))
         if features:
             tile = {
                 "name": self.get_vector_tile_layer_name(),
