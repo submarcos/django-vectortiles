@@ -160,9 +160,24 @@ class BaseTileJSONMixin:
 
 
 class BaseVectorTileView:
+    """ Base mixin to handle vector tile in a djang oView """
     content_type = "application/vnd.mapbox-vector-tile"
 
     def get(self, request, z, x, y):
+        """
+        Handle GET request to serve tile
+
+        :param request:
+        :type request: HttpRequest
+        :param x: longitude coordinate tile
+        :type x: int
+        :param y: latitude coordinate tile
+        :type y: int
+        :param z: zoom level
+        :type z: int
+
+        :rtype HTTPResponse
+        """
         content = self.get_tile(x, y, z, extent=self.vector_tile_extent, buffer=self.vector_tile_buffer, clip_geom=True)
         status = 200 if content else 204
         return HttpResponse(content, content_type=self.content_type, status=status)
