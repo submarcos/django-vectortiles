@@ -15,10 +15,12 @@ class BaseVectorTileMixin:
     vector_tile_geom_name = "geom"  # geom field to consider in qs
     vector_tile_fields = None  # other fields to include from qs
     vector_tile_generation = None  # use mapbox if you installed [mapbox] subdependencies
-    vector_tile_extent = 4096
-    vector_tile_buffer = 256
+    vector_tile_extent = 4096  # define tile extent
+    vector_tile_buffer = 256  # define buffer around tiles (intersected polygon display without borders)
+    vector_tile_clip_geom = True  # define if feature geometries should be clipped in tile
 
-    def get_bounds(self, x, y, z):
+    @classmethod
+    def get_bounds(cls, x, y, z):
         """
         Get extent from xyz tile extent to 3857
 
@@ -32,8 +34,7 @@ class BaseVectorTileMixin:
         :return: xmin, ymin, xmax, ymax in 3857 coordinate system
         :rtype: tuple
         """
-        xmin, ymin, xmax, ymax = mercantile.xy_bounds(x, y, z)
-        return xmin, ymin, xmax, ymax
+        return mercantile.xy_bounds(x, y, z)
 
     def get_vector_tile_queryset(self):
         """ Get feature queryset in tile dynamically """
@@ -47,7 +48,7 @@ class BaseVectorTileMixin:
         """ Get layer name in tile dynamically """
         return self.vector_tile_layer_name
 
-    def get_tile(self, x, y, z, extent=4096, buffer=256, clip_geom=True):
+    def get_tile(self, x, y, z):
         """
         Generate a mapbox vector tile as bytearray
 
@@ -57,16 +58,7 @@ class BaseVectorTileMixin:
         :type y: int
         :param z: zoom level
         :type z: int
-        :param extent: tile extent (default: 4096)
-        :type extent: int
-        :param buffer: buffer extent (default: 256)
-        :type buffer: int
-        :param clip_geom: clip geometries (default: True)
-        :type clip_geom: bool
-        :param geom_field: Geometry field name in subquery (default: "geom")
-        :type geom_field: str
-        :param include_fields: extra fields to include in Vector tile
-        :type include_fields: tuple
+
         :return: Mapbox Vector Tile
         :rtype: bytearray
         """
@@ -178,6 +170,6 @@ class BaseVectorTileView:
 
         :rtype HTTPResponse
         """
-        content = self.get_tile(x, y, z, extent=self.vector_tile_extent, buffer=self.vector_tile_buffer, clip_geom=True)
+        content = self.get_tile(x, y, z)
         status = 200 if content else 204
         return HttpResponse(content, content_type=self.content_type, status=status)

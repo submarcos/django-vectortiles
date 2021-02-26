@@ -15,14 +15,12 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
         circum = 2 * math.pi * radius
         return circum / size / 2 ** int(zoom)
 
-    def get_tile(self, x, y, z, extent=4096, buffer=256, clip_geom=True):
+    def get_tile(self, x, y, z):
         # get tile coordinates from x, y and z
         west, south, east, north = self.get_bounds(x, y, z)
         features = self.get_vector_tile_queryset()
 
-        pixel = self.pixel_length(z)
-        final_buffer = 4 * pixel
-        bbox = Polygon.from_bbox((west - final_buffer, south - final_buffer, east + final_buffer, north + final_buffer))
+        bbox = Polygon.from_bbox((west, south, east, north))
         bbox.srid = 3857
 
         filters = {
@@ -33,13 +31,14 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
         limit = self.get_vector_tile_queryset_limit()
         if limit:
             features = features[:limit]
-        features = features.annotate(clipped=Intersection(Transform(self.vector_tile_geom_name, 3857), bbox))
+        features = features.annotate(clipped=Intersection(Transform(self.vector_tile_geom_name, 3857),
+                                                          bbox.buffer(self.vector_tile_buffer)))
         if features:
             tile = {
                 "name": self.get_vector_tile_layer_name(),
                 "features": [
                     {
-                        "geometry": feature.clipped.simplify(pixel, preserve_topology=True).wkb.tobytes(),
+                        "geometry": feature.clipped.wkb.tobytes(),
                         "properties": {
                             key: getattr(feature, key) for key in self.vector_tile_fields if
                             self.vector_tile_fields
@@ -50,4 +49,4 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
             }
             return mapbox_vector_tile.encode(tile,
                                              quantize_bounds=(west, south, east, north),
-                                             extents=extent)
+                                             extents=self.vector_tile_extent)
