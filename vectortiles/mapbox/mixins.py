@@ -32,11 +32,8 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
         limit = self.get_vector_tile_queryset_limit()
         if limit:
             features = features[:limit]
-        if self.vector_tile_clip_geom:
-            features = features.annotate(clipped=Intersection(Transform(self.vector_tile_geom_name, 3857),
-                                                              bbox.buffer(self.vector_tile_buffer)))
-        else:
-            features.annotate(clipped=F('geom'))
+        features = features.annotate(clipped=Intersection(Transform(self.vector_tile_geom_name, 3857),
+                                                          bbox.buffer(self.vector_tile_buffer)) if self.vector_tile_clip_geom else F('geom'))
         if features:
             tile = {
                 "name": self.get_vector_tile_layer_name(),
