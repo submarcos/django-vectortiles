@@ -48,6 +48,9 @@ class BaseVectorTileMixin:
         """ Get layer name in tile dynamically """
         return self.vector_tile_layer_name
 
+    def iter_layer_features(self, queryset):
+        yield queryset, self.get_vector_tile_layer_name(), self.vector_tile_fields
+
     def get_tile(self, x, y, z):
         """
         Generate a mapbox vector tile as bytearray
