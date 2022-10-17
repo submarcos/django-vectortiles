@@ -50,7 +50,7 @@ jobs:
 
     services:
       postgres:
-        image: postgis/postgis:10-2.5
+        image: ${{ matrix.postgis-image }}
         env:
           POSTGRES_PASSWORD: travis_ci_test
           POSTGRES_USER: travis_ci_test
