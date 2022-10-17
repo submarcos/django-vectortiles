@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-0.1.0+dev   (XXXX-XX-XX)
+0.2.0       (2022-10-17)
 ------------------------
 
 * Possibly breaking change:
