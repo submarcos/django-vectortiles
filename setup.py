@@ -40,6 +40,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10'
     ],
     python_requires='>=3.6',
     install_requires=[
@@ -53,7 +54,8 @@ setup(
             'django-debug-toolbar', 'mapbox_vector_tile', 'sphinx-rtd-theme'
         ],
         'mapbox': [
-            'mapbox_vector_tile'
+            'mapbox_vector_tile',
+            'protobuf<4.21.0',  # https://github.com/tilezen/mapbox-vector-tile/issues/113
         ],
     }
 )
