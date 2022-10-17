@@ -15,6 +15,11 @@ test_require = [
     'psycopg2-binary'  # for dev and test only. in production, use psycopg2
 ]
 
+mapbox = [
+    'mapbox_vector_tile',
+    'protobuf<3.21.0',  # https://github.com/tilezen/mapbox-vector-tile/issues/113
+]
+
 setup(
     name='django-vectortiles',
     version=open(os.path.join(HERE, 'vectortiles', 'VERSION.md')).read().strip(),
@@ -50,12 +55,9 @@ setup(
     tests_require=test_require,
     extras_require={
         'test': test_require,
-        'dev': test_require + [
-            'django-debug-toolbar', 'mapbox_vector_tile', 'sphinx-rtd-theme'
+        'dev': test_require + mapbox + [
+            'django-debug-toolbar', 'sphinx-rtd-theme'
         ],
-        'mapbox': [
-            'mapbox_vector_tile',
-            'protobuf<3.21.0',  # https://github.com/tilezen/mapbox-vector-tile/issues/113
-        ],
+        'mapbox': mapbox,
     }
 )
