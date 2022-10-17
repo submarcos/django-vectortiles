@@ -10,6 +10,8 @@ CHANGELOG
 * Bug fixes:
   * Correct usage for vector_tile_extent / vector_tile_buffer and vector_tile_clip_geom
   * Clipped geom is now working for mapbox
+
+* Support Python 3.10 and django 4.1
   
 
 0.1.0       (2021-02-25)
