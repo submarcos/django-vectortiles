@@ -17,6 +17,10 @@ CHANGELOG
 
   * Add DRF and MapLibre examples
 
+* Bug fixes:
+
+  * Unpin protobuf version as latest mapbox-vector-tile version is fixed.
+
 
 0.2.0       (2022-10-17)
 ------------------------
@@ -56,8 +60,7 @@ First beta release
 0.0.1       (2020-10-22)
 ------------------------
 
-# First Release
-
+* First Release
   * Generate Vector Tiles from django models
       * in python
       * with PostGIS
