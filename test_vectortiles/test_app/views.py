@@ -1,11 +1,12 @@
 from django.urls import reverse
 from django.views.generic import ListView, DetailView
+from rest_framework.generics import ListAPIView
 
 from test_vectortiles.test_app.models import Feature, Layer
 from vectortiles.mapbox.views import MVTView as MapboxMVTView
 from vectortiles.mixins import BaseVectorTileView, VectorLayer
 from vectortiles.postgis.views import MVTView as PostgisMVTView
-
+from vectortiles.rest_framework.renderers import MVTRenderer
 
 # test at feature level and at layer level
 from vectortiles.views import TileJSONView
@@ -69,6 +70,14 @@ class PostGISLayerView(PostgisMVTView, DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         return BaseVectorTileView.get(self, request=request, z=kwargs.get('z'), x=kwargs.get('x'), y=kwargs.get('y'))
+
+
+class PostGISDRFFeatureView(PostgisMVTView, ListAPIView):
+    queryset = Feature.objects.all()
+    vector_tile_layer_name = "features"
+    vector_tile_fields = ('name', )
+    vector_tile_queryset_limit = 100
+    renderer_classes = (MVTRenderer, )
 
 
 class MapboxTileJSONFeatureView(TileJSONView):

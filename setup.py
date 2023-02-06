@@ -12,6 +12,7 @@ test_require = [
     'factory-boy',
     'flake8',
     'coverage',
+    'djangorestframework',
     'psycopg2-binary'  # for dev and test only. in production, use psycopg2
 ]
 

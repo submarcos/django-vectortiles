@@ -24,6 +24,8 @@ urlpatterns = [
     # feature level
     path('features/postgis/tile/<int:z>/<int:x>/<int:y>', views.PostGISFeatureView.as_view(),
          name="feature-postgis"),
+    path('features/postgis/drf/listview/tile/<int:z>/<int:x>/<int:y>', views.PostGISDRFFeatureView.as_view(),
+         name="feature-postgis-drf"),
     path('features/postgis/tile/manual/<int:z>/<int:x>/<int:y>', views.PostGISFeatureViewWithManualVectorTileQuerySet.as_view(),
          name="feature-postgis-with-manual-vector-tile-queryset"),
     path('features/postgis/tile/date/<int:z>/<int:x>/<int:y>', views.PostGISFeatureWithDateView.as_view(),

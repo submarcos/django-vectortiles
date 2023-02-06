@@ -92,3 +92,31 @@ Related model view
         path('layer/<int:pk>/tile/<int:z>/<int:x>/<int:y>', views.LayerTileView.as_view(), name="layer-tile"),
         ...
     ]
+
+Django Rest Framework
+*********************
+
+.. code-block:: python
+
+    from vectortiles.rest_framework.renderers import MVTRenderer
+    from vectortiles.postgis.views import MVTView
+    from rest_framework.generics import ListAPIView
+
+
+    class FeatureView(MVTView, ListAPIView):
+        queryset = Feature.objects.all()
+        vector_tile_layer_name = "features"
+        vector_tile_fields = ('name', )
+        vector_tile_queryset_limit = 100
+        renderer_classes = (MVTRenderer, )
+
+    # in your urls file
+    urlpatterns = [
+        ...
+        path('features/tile/<int:z>/<int:x>/<int:y>', views.FeatureView.as_view(),
+             name="feature-tile-drf"),
+        ...
+    ]
+
+
+then use http://your-domain/features/tile/{z}/{x}/{y}.pbf
