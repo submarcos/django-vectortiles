@@ -122,16 +122,6 @@ Just import and use vectortiles.mapbox.view.MVTView instead of vectortiles.postg
 
 django-vectortiles can be used with DRF if `renderer_classes` of the view is overridden (see [DRF docs](https://www.django-rest-framework.org/api-guide/renderers/#custom-renderers)). Simply use the right BaseMixin and action on viewsets, or directly a GET method in an APIView, i.e.:
 
-```python
-from vectortiles.rest_framework.renderers import MVTRenderer
-
-
-class TileServerView(MVTView, views.APIView):
-    renderer_classes = [MVTRenderer]
-
-    def get(...): ...
-```
-
 See documentation for more details.
 
 #### Development

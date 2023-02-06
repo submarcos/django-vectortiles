@@ -1,12 +1,17 @@
-from django.urls import path
+from django.contrib import admin
+from django.urls import path, include
 from django.views.defaults import page_not_found
+from rest_framework.routers import SimpleRouter
 
 from test_vectortiles.test_app import views
 
+router = SimpleRouter()
+router.register(r'features', views.PostGISDRFFeatureViewSet, basename='feature-drf-viewset')
 
 urlpatterns = [
     # mapbox related urls
     # feature level
+    path('admin/', admin.site.urls),
     path('features/mapbox/tile/<int:z>/<int:x>/<int:y>', views.MapboxFeatureView.as_view(),
          name="feature-mapbox"),
     path('features/mapbox/tile/{z}/{x}/{y}', page_not_found,
@@ -41,4 +46,7 @@ urlpatterns = [
          name="layer-postgis-pattern"),
     path('layer/<int:pk>/postgis/tilejson', views.PostGISTileJSONLayerView.as_view(),
          name="layer-postgis-tilejson"),
+    path('', include(router.urls)),
+    path('', views.IndexView.as_view(),
+         name="index"),
 ]

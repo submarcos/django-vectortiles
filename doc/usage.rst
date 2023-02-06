@@ -98,25 +98,46 @@ Django Rest Framework
 
 .. code-block:: python
 
+    # in your views.py file
     from vectortiles.rest_framework.renderers import MVTRenderer
-    from vectortiles.postgis.views import MVTView
-    from rest_framework.generics import ListAPIView
 
 
-    class FeatureView(MVTView, ListAPIView):
-        queryset = Feature.objects.all()
+    class FeatureAPIView(PostgisBaseVectorTile, APIView):
+        vector_tile_queryset = Feature.objects.all()
         vector_tile_layer_name = "features"
         vector_tile_fields = ('name', )
         vector_tile_queryset_limit = 100
         renderer_classes = (MVTRenderer, )
 
+        def get(self, request, *args, **kwargs):
+            return Response(self.get_tile(kwargs.get('x'), kwargs.get('y'), kwargs.get('z')))
+
     # in your urls file
     urlpatterns = [
         ...
-        path('features/tile/<int:z>/<int:x>/<int:y>', views.FeatureView.as_view(),
+        path('features/tiles/<int:z>/<int:x>/<int:y>', FeatureAPIView.as_view(),
              name="feature-tile-drf"),
         ...
     ]
 
+    # or extending viewset
 
-then use http://your-domain/features/tile/{z}/{x}/{y}.pbf
+    class FeatureViewSet(PostgisBaseVectorTile, viewsets.ModelViewSet):
+        queryset = Feature.objects.all()
+        vector_tile_layer_name = "features"
+        vector_tile_fields = ('name', )
+        vector_tile_queryset_limit = 100
+
+        @action(detail=False, methods=['get'], renderer_classes=(MVTRenderer, ),
+                url_path='tiles/(?P<z>\d+)/(?P<x>\d+)/(?P<y>\d+)', url_name='tile')
+        def tile(self, request, *args, **kwargs):
+            return Response(self.get_tile(x=int(kwargs.get('x')), y=int(kwargs.get('y')), z=int(kwargs.get('z'))))
+
+    # in your urls file
+    router = SimpleRouter()
+    router.register(r'features', FeatureViewSet, basename='features')
+
+    urlpatterns += router.urls
+
+
+then use http://your-domain/features/tiles/{z}/{x}/{y}.pbf

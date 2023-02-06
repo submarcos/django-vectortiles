@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MapBox / MapLibre example</title>
+    <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet'/>
+</head>
+<body>
+<div id="map" style="width: 100%; height: 100vh"></div>
+<script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
+<script>
+    var map = new maplibregl.Map({
+        container: 'map',
+        style: 'https://demotiles.maplibre.org/style.json', // stylesheet location
+        center: [-74.5, 40], // starting position [lng, lat]
+        zoom: 9 // starting zoom
+    });
+    map.on('load', function () {
+        // Add Mapillary sequence layer.
+        // https://www.mapillary.com/developer/tiles-documentation/#sequence-layer
+        map.addSource('features', {
+            'type': 'vector',
+            'tiles': [
+                'http://localhost:8000/features/postgis/drf/listview/tile/{z}/{x}/{y}'
+            ],
+            'minzoom': 0,
+            'maxzoom': 22
+        });
+        map.addLayer(
+            {
+                'id': 'features-polygon',
+                'type': 'fill',
+                'source': 'features',
+                'source-layer': 'features',
+                'paint': {
+                    'fill-color': 'rgb(53, 175, 109)',
+                    'fill-opacity': 0.6
+                }
+
+            },
+        );
+    });
+</script>
+</body>
+</html>
