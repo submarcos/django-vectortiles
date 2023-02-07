@@ -103,6 +103,38 @@ class VectorTileTestCase(VectorTileBaseTest):
                               'properties': {'name': 'feat2'}, 'id': 0, 'type': 2}]
             }})
 
+    def test_postgis_drf_api_features(self):
+        self.maxDiff = None
+        response = self.client.get(reverse('feature-postgis-drf', args=(0, 0, 0)))
+        self.assertEqual(response.status_code, 200)
+        content = mapbox_vector_tile.decode(response.content)
+        self.assertDictEqual(
+            content,
+            {'features': {
+                'extent': 4096,
+                'version': 2,
+                'features': [{'geometry': {'type': 'Point', 'coordinates': [2048, 2048]},
+                              'properties': {'name': 'feat1'}, 'id': 0, 'type': 1},
+                             {'geometry': {'type': 'LineString', 'coordinates': [[2048, 2048], [2059, 2059]]},
+                              'properties': {'name': 'feat2'}, 'id': 0, 'type': 2}]
+            }})
+
+    def test_postgis_drf_viewset_features(self):
+        self.maxDiff = None
+        response = self.client.get(reverse('feature-drf-viewset-tile', args=(0, 0, 0)))
+        self.assertEqual(response.status_code, 200)
+        content = mapbox_vector_tile.decode(response.content)
+        self.assertDictEqual(
+            content,
+            {'features': {
+                'extent': 4096,
+                'version': 2,
+                'features': [{'geometry': {'type': 'Point', 'coordinates': [2048, 2048]},
+                              'properties': {'name': 'feat1'}, 'id': 0, 'type': 1},
+                             {'geometry': {'type': 'LineString', 'coordinates': [[2048, 2048], [2059, 2059]]},
+                              'properties': {'name': 'feat2'}, 'id': 0, 'type': 2}]
+            }})
+
     def test_postgis_features_with_filtered_date(self):
         self.maxDiff = None
         response = self.client.get(reverse('feature-date-postgis', args=(0, 0, 0)))
@@ -126,7 +158,7 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
         content = response.json()
         self.assertDictEqual(
             content,
-            {'attribution': '© Makina Corpus',
+            {'attribution': '© JEC',
              'description': 'generated from mapbox library',
              'maxzoom': 22,
              'minzoom': 0,
@@ -148,7 +180,7 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
         content = response.json()
         self.assertDictEqual(
             content,
-            {'attribution': '© Makina Corpus',
+            {'attribution': '© JEC',
              'description': 'generated from mapbox library',
              'maxzoom': 22,
              'minzoom': 0,
@@ -170,7 +202,7 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
         content = response.json()
         self.assertDictEqual(
             content,
-            {'attribution': '© Makina Corpus',
+            {'attribution': '© JEC',
              'description': 'generated from postgis database',
              'maxzoom': 22,
              'minzoom': 0,
@@ -192,7 +224,7 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
         content = response.json()
         self.assertDictEqual(
             content,
-            {'attribution': '© Makina Corpus',
+            {'attribution': '© JEC',
              'description': 'generated from postgis database',
              'maxzoom': 22,
              'minzoom': 0,

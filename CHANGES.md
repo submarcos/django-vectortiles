@@ -4,6 +4,10 @@ CHANGELOG
 0.2.0+dev   (XXXX-XX-XX)
 ------------------------
 
+* Features
+
+  * Native MVTRenderer for django-rest-framework
+
 
 0.2.0       (2022-10-17)
 ------------------------
