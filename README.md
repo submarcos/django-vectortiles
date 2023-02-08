@@ -118,11 +118,9 @@ urlpatterns = [
 
 Just import and use vectortiles.mapbox.view.MVTView instead of vectortiles.postgis.view.MVTView
 
-#### Usage with DRF
+#### Usage with Django Rest Framework
 
-django-vectortiles can be used with DRF if `renderer_classes` of the view is overridden (see [DRF docs](https://www.django-rest-framework.org/api-guide/renderers/#custom-renderers)). Simply use the right BaseMixin and action on viewsets, or directly a GET method in an APIView, i.e.:
-
-See documentation for more details.
+django-vectortiles can be used with DRF if `renderer_classes` of the view is overridden (see [DRF docs](https://www.django-rest-framework.org/api-guide/renderers/#custom-renderers)). Simply use the right BaseMixin and action on viewsets, or directly a GET method in an APIView. See [documentation](https://django-vectortiles.readthedocs.io/en/latest/usage.html#django-rest-framework) for more details.
 
 #### Development
 
