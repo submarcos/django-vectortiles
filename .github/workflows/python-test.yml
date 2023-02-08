@@ -15,6 +15,7 @@ jobs:
       matrix:
         python-version: ['3.6', '3.10']
         django-version: ['2.2.*', '3.2.*', '4.1.*']
+        postgis-image: ['postgis/postgis:latest']
         exclude:
           - python-version: '3.10'  # 3.10 is not supported by django 2.2
             django-version: '2.2.*'
@@ -25,8 +26,6 @@ jobs:
             postgis-image: 'postgis/postgis:10-2.5'
           - django-version: '3.2.*'
             postgis-image: 'postgis/postgis:10-2.5'
-          - django-version: '4.1.*'
-            postgis-image: 'postgis/postgis:11-2.5'  # django 4.1 requires postgresql >= 11
 
     services:
       postgres:
