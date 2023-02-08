@@ -11,6 +11,8 @@ CHANGES = open(os.path.join(HERE, 'CHANGES.md')).read()
 test_require = [
     'factory-boy',
     'flake8',
+    'isort',
+    'black',
     'coverage',
     'djangorestframework',
     'psycopg2-binary'  # for dev and test only. in production, use psycopg2

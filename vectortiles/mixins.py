@@ -3,21 +3,30 @@ from urllib.parse import unquote
 import mercantile
 from django.http import HttpResponse
 
+from vectortiles import settings as app_settings
+
 
 class BaseVectorTileMixin:
     """
     Base Mixin to handle vector tile generation
     """
+
     vector_tile_content_type = "application/x-protobuf"
     vector_tile_queryset = None
     vector_tile_queryset_limit = None
     vector_tile_layer_name = None  # name for data layer in vector tile
     vector_tile_geom_name = "geom"  # geom field to consider in qs
     vector_tile_fields = None  # other fields to include from qs
-    vector_tile_generation = None  # use mapbox if you installed [mapbox] subdependencies
+    vector_tile_generation = (
+        None  # use mapbox if you installed [mapbox] sub-dependencies
+    )
     vector_tile_extent = 4096  # define tile extent
-    vector_tile_buffer = 256  # define buffer around tiles (intersected polygon display without borders)
-    vector_tile_clip_geom = True  # define if feature geometries should be clipped in tile
+    vector_tile_buffer = (
+        256  # define buffer around tiles (intersected polygon display without borders)
+    )
+    vector_tile_clip_geom = (
+        True  # define if feature geometries should be clipped in tile
+    )
 
     @classmethod
     def get_bounds(cls, x, y, z):
@@ -37,15 +46,19 @@ class BaseVectorTileMixin:
         return mercantile.xy_bounds(x, y, z)
 
     def get_vector_tile_queryset(self):
-        """ Get feature queryset in tile dynamically """
-        return self.vector_tile_queryset if self.vector_tile_queryset is not None else self.get_queryset()
+        """Get feature queryset in tile dynamically"""
+        return (
+            self.vector_tile_queryset
+            if self.vector_tile_queryset is not None
+            else self.get_queryset()
+        )
 
     def get_vector_tile_queryset_limit(self):
-        """ Get feature limit by tile dynamically """
+        """Get feature limit by tile dynamically"""
         return self.vector_tile_queryset_limit
 
     def get_vector_tile_layer_name(self):
-        """ Get layer name in tile dynamically """
+        """Get layer name in tile dynamically"""
         return self.vector_tile_layer_name
 
     def get_tile(self, x, y, z):
@@ -91,11 +104,11 @@ class VectorLayer:
 
     def get_vector_layer(self):
         return {
-            'id': self.get_vector_tile_layer_id(),
-            'description': self.get_vector_tile_layer_description(),
-            'fields': {},  # self.layer_fields(layer),
-            'minzoom': self.get_vector_tile_layer_min_zoom(),
-            'maxzoom': self.get_vector_tile_layer_max_zoom(),
+            "id": self.get_vector_tile_layer_id(),
+            "description": self.get_vector_tile_layer_description(),
+            "fields": {},  # self.layer_fields(layer),
+            "minzoom": self.get_vector_tile_layer_min_zoom(),
+            "maxzoom": self.get_vector_tile_layer_max_zoom(),
         }
 
 
@@ -105,11 +118,11 @@ class BaseTileJSONMixin:
     vector_tile_tilejson_description = ""
 
     def get_vector_tile_tilejson_min_zoom(self):
-        min_zoom = min(item['minzoom'] for item in self.get_vector_layers())
+        min_zoom = min(item["minzoom"] for item in self.get_vector_layers())
         return min_zoom or 0
 
     def get_vector_tile_tilejson_max_zoom(self):
-        max_zoom = max(item['maxzoom'] for item in self.get_vector_layers())
+        max_zoom = max(item["maxzoom"] for item in self.get_vector_layers())
         return max_zoom or 22
 
     def get_vector_tile_tilejson_attribution(self):
@@ -121,39 +134,40 @@ class BaseTileJSONMixin:
     def get_vector_tile_tilejson_name(self):
         return self.vector_tile_tilejson_name
 
-    def get_tile_urls(self, tile_url, base_url=''):
+    def get_tile_urls(self, tile_url, base_url=""):
         # if app_settings.TERRA_TILES_HOSTNAMES:
         #     return [
         #         unquote(urljoin(hostname, tile_url))
         #         for hostname in app_settings.VECTOR_TILES_HOSTNAMES
         #     ]
         # else:
-        return [
-            unquote(tile_url)
-        ]
+        return [unquote(tile_url)]
 
     def get_vector_layers(self):
-        raise NotImplementedError(""" you should implement get_vector_layers to return a VectorLayer list """)
+        raise NotImplementedError(
+            """ you should implement get_vector_layers to return a VectorLayer list """
+        )
 
     def get_tilejson(self, tile_url, version="3.0.0"):
         # https://github.com/mapbox/tilejson-spec/tree/3.0/3.0.0
         return {
-            'tilejson': version,
-            'name': self.get_vector_tile_tilejson_name(),
-            'tiles': self.get_tile_urls(tile_url),
-            'minzoom': self.get_vector_tile_tilejson_min_zoom(),
-            'maxzoom': self.get_vector_tile_tilejson_max_zoom(),
+            "tilejson": version,
+            "name": self.get_vector_tile_tilejson_name(),
+            "tiles": self.get_tile_urls(tile_url),
+            "minzoom": self.get_vector_tile_tilejson_min_zoom(),
+            "maxzoom": self.get_vector_tile_tilejson_max_zoom(),
             # bounds
             # center
-            'attribution': self.get_vector_tile_tilejson_attribution(),
-            'description': self.get_vector_tile_tilejson_description(),
-            'vector_layers': self.get_vector_layers(),
+            "attribution": self.get_vector_tile_tilejson_attribution(),
+            "description": self.get_vector_tile_tilejson_description(),
+            "vector_layers": self.get_vector_layers(),
         }
 
 
 class BaseVectorTileView:
-    """ Base mixin to handle vector tile in a djang oView """
-    content_type = "application/vnd.mapbox-vector-tile"
+    """Base mixin to handle vector tile in a djang oView"""
+
+    content_type = app_settings.VECTOR_TILES_CONTENT_TYPE
 
     def get(self, request, z, x, y):
         """

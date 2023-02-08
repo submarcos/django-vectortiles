@@ -24,16 +24,20 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
         bbox = Polygon.from_bbox((west, south, east, north))
         bbox.srid = 3857
 
-        filters = {
-            f"{self.vector_tile_geom_name}__intersects": bbox
-        }
+        filters = {f"{self.vector_tile_geom_name}__intersects": bbox}
         features = features.filter(**filters)
         # limit feature number if limit provided
         limit = self.get_vector_tile_queryset_limit()
         if limit:
             features = features[:limit]
-        features = features.annotate(clipped=Intersection(Transform(self.vector_tile_geom_name, 3857),
-                                                          bbox.buffer(self.pixel_length(z, self.vector_tile_buffer))) if self.vector_tile_clip_geom else F('geom'))
+        features = features.annotate(
+            clipped=Intersection(
+                Transform(self.vector_tile_geom_name, 3857),
+                bbox.buffer(self.pixel_length(z, self.vector_tile_buffer)),
+            )
+            if self.vector_tile_clip_geom
+            else F("geom")
+        )
         if features:
             tile = {
                 "name": self.get_vector_tile_layer_name(),
@@ -41,13 +45,16 @@ class MapboxBaseVectorTile(BaseVectorTileMixin):
                     {
                         "geometry": feature.clipped.wkb.tobytes(),
                         "properties": {
-                            key: getattr(feature, key) for key in self.vector_tile_fields if
-                            self.vector_tile_fields
-                        }
+                            key: getattr(feature, key)
+                            for key in self.vector_tile_fields
+                            if self.vector_tile_fields
+                        },
                     }
                     for feature in features
                 ],
             }
-            return mapbox_vector_tile.encode(tile,
-                                             quantize_bounds=(west, south, east, north),
-                                             extents=self.vector_tile_extent)
+            return mapbox_vector_tile.encode(
+                tile,
+                quantize_bounds=(west, south, east, north),
+                extents=self.vector_tile_extent,
+            )

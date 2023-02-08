@@ -1,5 +1,6 @@
 from django.test import TestCase
-from vectortiles.mixins import BaseVectorTileMixin, BaseTileJSONMixin
+
+from vectortiles.mixins import BaseTileJSONMixin, BaseVectorTileMixin
 
 
 class BaseVectorTileMixinTestCase(TestCase):
