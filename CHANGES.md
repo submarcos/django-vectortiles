@@ -8,6 +8,15 @@ CHANGELOG
 
   * Native MVTRenderer for django-rest-framework
 
+* Quality
+
+  * Black-ified
+  * iSort-ed
+
+* Documentation
+
+  * Add DRF and MapLibre examples
+
 
 0.2.0       (2022-10-17)
 ------------------------
