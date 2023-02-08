@@ -141,3 +141,9 @@ Django Rest Framework
 
 
 then use http://your-domain/features/tiles/{z}/{x}/{y}.pbf
+
+MapLibre Example
+****************
+
+.. literalinclude:: ../test_vectortiles/test_app/templates/index.html
+   :language: html

@@ -1,12 +1,21 @@
 CHANGELOG
 =========
 
-0.2.0+dev   (XXXX-XX-XX)
-------------------------
+1.0.0.a1
+--------
 
 * Features
 
   * Native MVTRenderer for django-rest-framework
+
+* Quality
+
+  * Black-ified
+  * iSort-ed
+
+* Documentation
+
+  * Add DRF and MapLibre examples
 
 
 0.2.0       (2022-10-17)
@@ -47,7 +56,8 @@ First beta release
 0.0.1       (2020-10-22)
 ------------------------
 
-* First Release
+# First Release
+
   * Generate Vector Tiles from django models
       * in python
       * with PostGIS

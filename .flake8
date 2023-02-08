@@ -1,3 +1,0 @@
-[flake8]
-ignore = E501,W504
-exclude = test_vectortiles/settings*

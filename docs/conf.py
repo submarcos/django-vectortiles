@@ -12,13 +12,15 @@
 #
 import os
 import sys
+import datetime
+
 sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 project = 'django-vectortiles'
-copyright = '2021, Jean-Etienne Castagnede'
+copyright = f'2021 - {datetime.date.today().year}, Jean-Etienne Castagnede'
 author = 'Jean-Etienne Castagnede'
 
 # The full version, including alpha/beta/rc tags

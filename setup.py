@@ -6,11 +6,12 @@ from setuptools import setup, find_packages
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 README = open(os.path.join(HERE, 'README.md')).read()
-CHANGES = open(os.path.join(HERE, 'CHANGES.md')).read()
 
 test_require = [
     'factory-boy',
     'flake8',
+    'isort',
+    'black',
     'coverage',
     'djangorestframework',
     'psycopg2-binary'  # for dev and test only. in production, use psycopg2
@@ -27,7 +28,7 @@ setup(
     include_package_data=True,
     author="Jean-Etienne Castagnede",
     description='Django vector tile generation',
-    long_description=README + '\n\n' + CHANGES,
+    long_description=README,
     description_content_type="text/markdown",
     long_description_content_type="text/markdown",
     packages=find_packages(),
@@ -41,6 +42,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
+        'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',

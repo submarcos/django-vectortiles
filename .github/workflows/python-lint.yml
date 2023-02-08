@@ -1,0 +1,76 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Code & doc quality
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  flake8:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.6
+      env:
+        LANG: C.UTF-8
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install flake8
+        run: |
+          pip install flake8
+
+      - name: Check
+        run: |
+          flake8 vectortiles test_vectortiles
+
+  isort:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.6
+      env:
+        LANG: C.UTF-8
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install isort
+        run: |
+          pip install isort
+
+      - name: Check
+        run: |
+          isort -c vectortiles test_vectortiles
+
+  black:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.6
+      env:
+        LANG: C.UTF-8
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install black
+        run: |
+          pip install black
+
+      - name: Check
+        run: |
+          black --check vectortiles test_vectortiles
+
+  doc:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.6
+      env:
+        LANG: C.UTF-8
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check documentation
+        run: |
+          cd docs
+          pip install -r ./requirements.txt -U 
+          make html SPHINXOPTS="-W"
+
