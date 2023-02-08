@@ -68,12 +68,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Install doc dependencies
+      - name: Check documentation
         run: |
           cd docs
           pip install -r ./requirements.txt -U 
-
-      - name: Check
-        run: |
           make html SPHINXOPTS="-W"
 
