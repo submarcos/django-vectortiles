@@ -4,12 +4,12 @@ INSTALLATION
 Requirements
 ************
 
-* You need to install geodjango required libraries (See `here <https://docs.djangoproject.com/en/3.1/ref/contrib/gis/install/geolibs/>`_)
+* You need to install geodjango required libraries (See `here <https://docs.djangoproject.com/en/stable/ref/contrib/gis/install/geolibs/>`_)
 
 PostGIS 2.4+ backend usage
 **************************
 
-* You need a PostgreSQL database with PostGIS 2.4+ extension enabled. (See `<https://docs.djangoproject.com/en/3.1/ref/contrib/gis/install/postgis/>`_)
+* You need a PostgreSQL database with PostGIS 2.4+ extension enabled. (See `<https://docs.djangoproject.com/en/stable/ref/contrib/gis/install/postgis/>`_)
 
 * You need to enable and use **django.contrib.gis.db.backends.postgis** database backend
 

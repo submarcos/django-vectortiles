@@ -12,8 +12,6 @@ Welcome to django-vectortiles's documentation!
    usage.rst
    changelog.rst
 
-.. automodule:: vectortiles.mixins
-    :members:
 
 Indices and tables
 ==================
