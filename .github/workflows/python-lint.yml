@@ -37,4 +37,4 @@ jobs:
 
     - name: Check with black
       run: |
-        black -c vectortiles test_vectortiles
+        black --check vectortiles test_vectortiles
