@@ -10,6 +10,7 @@ Welcome to django-vectortiles's documentation!
 
    installation.rst
    usage.rst
+   changelog.rst
 
 .. automodule:: vectortiles.mixins
     :members:

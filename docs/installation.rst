@@ -9,7 +9,7 @@ Requirements
 PostGIS 2.4+ backend usage
 **************************
 
-* You need a PostgreSQL database with PostGIS 2.4+ extension enabled. (See `here <https://docs.djangoproject.com/en/3.1/ref/contrib/gis/install/postgis/>`_)
+* You need a PostgreSQL database with PostGIS 2.4+ extension enabled. (See `<https://docs.djangoproject.com/en/3.1/ref/contrib/gis/install/postgis/>`_)
 
 * You need to enable and use **django.contrib.gis.db.backends.postgis** database backend
 
@@ -26,4 +26,4 @@ Other database backend usages
 
    pip install django-vectortiles[mapbox]
 
-This will include subdependencies to generate vector tiles from mapbox_vector_tiles python library.
+This will include sub-dependencies to generate vector tiles from mapbox_vector_tiles python library.
