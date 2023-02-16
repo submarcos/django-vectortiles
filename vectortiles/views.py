@@ -1,6 +1,3 @@
-from hashlib import md5
-
-from django.core.cache import cache
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 

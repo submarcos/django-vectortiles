@@ -94,7 +94,7 @@ class VectorTileTestCase(VectorTileBaseTest):
             },
         )
 
-    def test_layer(self):
+    def test_layer_2(self):
         self.maxDiff = None
         response = self.client.get(reverse("layer", args=(0, 0, 0)))
         self.assertEqual(response.status_code, 200)

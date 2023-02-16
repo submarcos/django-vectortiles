@@ -30,7 +30,11 @@ class BaseVectorLayerMixin:
     vector_tile_layer_max_zoom = 22
 
     def check_in_zoom_levels(self, z):
-        return self.get_vector_tile_layer_min_zoom() <= z <= self.get_vector_tile_layer_max_zoom()
+        return (
+            self.get_vector_tile_layer_min_zoom()
+            <= z
+            <= self.get_vector_tile_layer_max_zoom()
+        )
 
     def get_vector_tile_layer_id(self):
         return self.vector_tile_layer_id
