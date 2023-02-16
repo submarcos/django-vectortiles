@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.utils.text import slugify
 
 from test_vectortiles.test_app.functions import SimplifyPreserveTopology
-from test_vectortiles.test_app.models import Feature, Layer, FullDataLayer
+from test_vectortiles.test_app.models import Feature, FullDataLayer, Layer
 from vectortiles import VectorLayer
 
 
@@ -25,8 +25,10 @@ class FeatureLayerVectorLayer(VectorLayer):
         self.instance = instance
 
     def get_tile(self, x, y, z):
-        cache_key = md5(f"{self.get_vector_tile_layer_id()}-{z}-{x}-{y}".encode()).hexdigest()
-        if cache.has_key(cache_key):
+        cache_key = md5(
+            f"{self.get_vector_tile_layer_id()}-{z}-{x}-{y}".encode()
+        ).hexdigest()
+        if cache.has_key(cache_key):  # NOQA W601
             return cache.get(cache_key)
 
         else:
@@ -87,8 +89,10 @@ class FullDataFeatureVectorLayer(VectorLayer):
         self.instance = instance
 
     def get_tile(self, x, y, z):
-        cache_key = md5(f"{self.get_vector_tile_layer_id()}-{self.instance.update_datetime}-{z}-{x}-{y}".encode()).hexdigest()
-        if cache.has_key(cache_key):
+        cache_key = md5(
+            f"{self.get_vector_tile_layer_id()}-{self.instance.update_datetime}-{z}-{x}-{y}".encode()
+        ).hexdigest()
+        if cache.has_key(cache_key):  # NOQA W601
             return cache.get(cache_key)
 
         else:
@@ -108,13 +112,38 @@ class FullDataFeatureVectorLayer(VectorLayer):
             if z in range(self.get_vector_tile_layer_min_zoom(), 9):
                 qs = qs.filter(properties__contains={"nature": "Type autoroutier"})
             elif z in range(9, 12):
-                qs = qs.filter(Q(properties__nature__in=["Type autoroutier", "Route à 2 chaussées", "Bretelle", ]))
+                qs = qs.filter(
+                    Q(
+                        properties__nature__in=[
+                            "Type autoroutier",
+                            "Route à 2 chaussées",
+                            "Bretelle",
+                        ]
+                    )
+                )
             elif z in range(12, 15):
-                qs = qs.filter(Q(properties__nature__in=["Type autoroutier", "Route à 2 chaussées", "Bretelle",
-                                                         'Route à 1 chaussée', ]))
+                qs = qs.filter(
+                    Q(
+                        properties__nature__in=[
+                            "Type autoroutier",
+                            "Route à 2 chaussées",
+                            "Bretelle",
+                            "Route à 1 chaussée",
+                        ]
+                    )
+                )
         elif self.instance.name == "zone_de_vegetation":
             if z < 15:
-                qs = qs.exclude(properties__nature__in=["Verger", 'Vigne', 'Haie', 'Lande ligneuse', 'Peupleraie', 'Bois'])
+                qs = qs.exclude(
+                    properties__nature__in=[
+                        "Verger",
+                        "Vigne",
+                        "Haie",
+                        "Lande ligneuse",
+                        "Peupleraie",
+                        "Bois",
+                    ]
+                )
         return qs
 
     def get_vector_tile_layer_max_zoom(self):
@@ -156,7 +185,11 @@ class FullDataLayerOptimizeVectorLayer(FullDataFeatureVectorLayer):
             19: 0.299,
             20: 0.149,
         }
-        return qs.annotate(simplified_geom=SimplifyPreserveTopology(Transform("geom", 3857), simplifications.get(z)))
+        return qs.annotate(
+            simplified_geom=SimplifyPreserveTopology(
+                Transform("geom", 3857), simplifications.get(z)
+            )
+        )
 
 
 class RegionVectorLayer(FullDataFeatureVectorLayer):
@@ -199,9 +232,26 @@ class TronconRouteVectorLayer(FullDataFeatureVectorLayer):
         if z in range(self.get_vector_tile_layer_min_zoom(), 9):
             qs = qs.filter(properties__contains={"nature": "Type autoroutier"})
         elif z in range(9, 12):
-            qs = qs.filter(Q(properties__nature__in=["Type autoroutier", "Route à 2 chaussées", "Bretelle", ]))
+            qs = qs.filter(
+                Q(
+                    properties__nature__in=[
+                        "Type autoroutier",
+                        "Route à 2 chaussées",
+                        "Bretelle",
+                    ]
+                )
+            )
         elif z in range(12, 15):
-            qs = qs.filter(Q(properties__nature__in=["Type autoroutier", "Route à 2 chaussées", "Bretelle", 'Route à 1 chaussée',]))
+            qs = qs.filter(
+                Q(
+                    properties__nature__in=[
+                        "Type autoroutier",
+                        "Route à 2 chaussées",
+                        "Bretelle",
+                        "Route à 1 chaussée",
+                    ]
+                )
+            )
         return qs
 
 
