@@ -4,6 +4,11 @@ CHANGELOG
 1.0.0.a1
 --------
 
+** Breaking changes **
+
+  * Refactor PostGIS and Python (old named MapBox) backends usage. Use setting to set (default postgis)
+  * No DetailView anymore. As Tile can have many layers, declare VectorLayer on MTVView (one or many).
+
 * Features
 
   * Native MVTRenderer for django-rest-framework
