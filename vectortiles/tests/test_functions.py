@@ -3,7 +3,7 @@ from django import VERSION
 from django.test import TestCase
 
 from test_vectortiles.test_app.models import Feature
-from vectortiles.postgis.functions import MakeEnvelope
+from vectortiles.backends.postgis.functions import MakeEnvelope
 
 
 class MakeEnvelopeTestCase(TestCase):

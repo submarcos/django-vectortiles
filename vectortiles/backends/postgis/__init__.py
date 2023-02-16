@@ -1,16 +1,17 @@
 from django.contrib.gis.db.models.functions import Transform
 from django.db import connection
 
-from vectortiles.mixins import BaseVectorTileMixin
-from vectortiles.postgis.functions import AsMVTGeom, MakeEnvelope
+from vectortiles.backends import BaseVectorLayerMixin
+from vectortiles.backends.postgis.functions import MakeEnvelope, AsMVTGeom
 
 
-class PostgisBaseVectorTile(BaseVectorTileMixin):
+class VectorLayer(BaseVectorLayerMixin):
     def get_tile(self, x, y, z):
+        if not self.check_in_zoom_levels(z):
+            return b""
+        features = self.get_vector_tile_queryset(z, x, y)
         # get tile coordinates from x, y and z
         xmin, ymin, xmax, ymax = self.get_bounds(x, y, z)
-        features = self.get_vector_tile_queryset()
-
         # keep features intersecting tile
         filters = {
             # GeoFuncMixin implicitly transforms to SRID of geom
