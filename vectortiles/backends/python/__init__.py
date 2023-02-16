@@ -5,22 +5,23 @@ from django.contrib.gis.db.models.functions import Intersection, Transform
 from django.contrib.gis.geos import Polygon
 from django.db.models import F
 
-from vectortiles.mixins import BaseVectorTileMixin
+from vectortiles.backends import BaseVectorLayerMixin
 
 
-class MapboxBaseVectorTile(BaseVectorTileMixin):
-    vector_tile_generation = "mapbox"
-
+class VectorLayer(BaseVectorLayerMixin):
     def pixel_length(self, zoom, size):
         radius = 6378137
         circum = 2 * math.pi * radius
         return circum / size / 2 ** int(zoom)
 
     def get_tile(self, x, y, z):
+        if not self.check_in_zoom_levels(z):
+            return b""
+
+        features = self.get_vector_tile_queryset(z, x, y)
+
         # get tile coordinates from x, y and z
         west, south, east, north = self.get_bounds(x, y, z)
-        features = self.get_vector_tile_queryset()
-
         bbox = Polygon.from_bbox((west, south, east, north))
         bbox.srid = 3857
 

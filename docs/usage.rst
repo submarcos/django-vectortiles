@@ -102,7 +102,7 @@ Django Rest Framework
     from vectortiles.rest_framework.renderers import MVTRenderer
 
 
-    class FeatureAPIView(PostgisBaseVectorTile, APIView):
+    class FeatureAPIView(BaseVectorTile, APIView):
         vector_tile_queryset = Feature.objects.all()
         vector_tile_layer_name = "features"
         vector_tile_fields = ('name', )
@@ -122,7 +122,7 @@ Django Rest Framework
 
     # or extending viewset
 
-    class FeatureViewSet(PostgisBaseVectorTile, viewsets.ModelViewSet):
+    class FeatureViewSet(BaseVectorTile, viewsets.ModelViewSet):
         queryset = Feature.objects.all()
         vector_tile_layer_name = "features"
         vector_tile_fields = ('name', )
