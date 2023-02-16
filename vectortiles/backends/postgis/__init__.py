@@ -2,7 +2,7 @@ from django.contrib.gis.db.models.functions import Transform
 from django.db import connection
 
 from vectortiles.backends import BaseVectorLayerMixin
-from vectortiles.backends.postgis.functions import MakeEnvelope, AsMVTGeom
+from vectortiles.backends.postgis.functions import AsMVTGeom, MakeEnvelope
 
 
 class VectorLayer(BaseVectorLayerMixin):

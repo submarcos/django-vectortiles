@@ -16,11 +16,15 @@ class BaseTileJSONView(BaseVectorView):
     vector_tile_tilejson_description = ""
 
     def get_vector_tile_tilejson_min_zoom(self):
-        min_zoom = min(layer.get_tilejson_vector_layer()["minzoom"] for layer in self.get_layers())
+        min_zoom = min(
+            layer.get_tilejson_vector_layer()["minzoom"] for layer in self.get_layers()
+        )
         return min_zoom or 0
 
     def get_vector_tile_tilejson_max_zoom(self):
-        max_zoom = max(layer.get_tilejson_vector_layer()["maxzoom"] for layer in self.get_layers())
+        max_zoom = max(
+            layer.get_tilejson_vector_layer()["maxzoom"] for layer in self.get_layers()
+        )
         return max_zoom or 22
 
     def get_vector_tile_tilejson_attribution(self):
