@@ -17,15 +17,15 @@
 pip install django-vectortiles
 ```
 
-* Without any other option, use only vectortiles.postgis
+* By default, postgis backend is enabled.
 * Ensure you have psycopg2 set and installed
 
-#### If you don't want to use Postgis
+#### If you don't want to use Postgis and / or PostgreSQL
 ```bash
-pip install django-vectortiles[mapbox]
+pip install django-vectortiles[python]
 ```
 * This will incude mapbox_vector_tiles package and its dependencies
-* Use only vectortiles.mapbox
+* Set VECTOR_TILES_BACKEND to "vectortiles.backends.python"
 
 ### Examples
 
@@ -37,31 +37,33 @@ pip install django-vectortiles[mapbox]
 from django.contrib.gis.db import models
 
 
-class Layer(models.Model):
-    name = models.CharField(max_length=250)
-
-
 class Feature(models.Model):
     geom = models.GeometryField(srid=4326)
     name = models.CharField(max_length=250)
-    layer = models.ForeignKey(Layer, on_delete=models.CASCADE, related_name='features')
 ```
 
 
-#### Simple model:
+#### Simple Example:
 
 ```python
-# in your view file
-
-from django.views.generic import ListView
-from vectortiles.postgis.views import MVTView
+# in a vector_layers.py file
+from vectortiles import VectorLayer
 from yourapp.models import Feature
 
 
-class FeatureTileView(MVTView, ListView):
+class FeatureVectorLayer(VectorLayer):
     model = Feature
     vector_tile_layer_name = "features"
-    vector_tile_fields = ('other_field_to_include', )
+    vector_tile_fields = ("name",)
+
+# in your view file
+
+from vectortiles.views import MVTView
+from yourapp.vector_layers import FeatureVectorLayer
+
+
+class FeatureTileView(MVTView):
+    layers = [FeatureVectorLayer()]
 
 
 # in your urls file
@@ -114,22 +116,11 @@ urlpatterns = [
 ]
 ```
 
-#### Usage without PostgreSQL / PostGIS
-
-Just import and use vectortiles.mapbox.view.MVTView instead of vectortiles.postgis.view.MVTView
-
-#### Usage with DRF
-
-django-vectortiles can be used with DRF if `renderer_classes` of the view is overridden (see [DRF docs](https://www.django-rest-framework.org/api-guide/renderers/#custom-renderers)). Simply use the right BaseMixin and action on viewsets, or directly a GET method in an APIView, i.e.:
-
-See documentation for more details.
-
 #### Development
 
 ##### With docker and docker-compose
 
 ```bash
-docker pull makinacorpus/geodjango:bionic-3.6
 docker-compose build
 # docker-compose up
 docker-compose run /code/venv/bin/python ./manage.py test
