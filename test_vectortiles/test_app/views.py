@@ -2,18 +2,25 @@ from hashlib import md5
 
 from django.core.cache import cache
 from django.urls import reverse
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import TemplateView
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from test_vectortiles.test_app.models import Feature, Layer, FullDataLayer
+from test_vectortiles.test_app.models import Feature, FullDataLayer
 from test_vectortiles.test_app.vt_layers import (
-    FeatureLayerVectorLayer,
+    BatimentVectorLayer,
+    CommuneVectorLayer,
+    DepartementVectorLayer,
+    EPCIVectorLayer,
+    FeatureLayerFilteredByDateVectorLayer,
     FeatureVectorLayer,
-    FeatureLayerFilteredByDateVectorLayer, CityCentroidVectorLayer, FullDataFeatureVectorLayer, RegionVectorLayer,
-    CommuneVectorLayer, DepartementVectorLayer, EPCIVectorLayer, SurfaceHydrographiqueVectorLayer,
-    VoieFerreeVectorLayer, TronconRouteVectorLayer, BatimentVectorLayer, TerrainDeSportVectorLayer,
+    FullDataFeatureVectorLayer,
+    RegionVectorLayer,
+    SurfaceHydrographiqueVectorLayer,
+    TerrainDeSportVectorLayer,
+    TronconRouteVectorLayer,
+    VoieFerreeVectorLayer,
 )
 from vectortiles.mixins import BaseVectorTileView
 from vectortiles.rest_framework.renderers import MVTRenderer
@@ -41,23 +48,41 @@ class FeatureTileJSONView(FeatureVectorLayers, TileJSONView):
 
 class MultipleVectorLayers:
     def get_layers(self):
-        return [FullDataFeatureVectorLayer(layer) for layer in FullDataLayer.objects.filter(include_in_tilejson=True)]
-        #return [FullDataFeatureVectorLayer(layer) for layer in FullDataLayer.objects.all()]
-        return [RegionVectorLayer(), DepartementVectorLayer(), EPCIVectorLayer(), CommuneVectorLayer(),
-                SurfaceHydrographiqueVectorLayer(), BatimentVectorLayer(), TronconRouteVectorLayer(),
-                VoieFerreeVectorLayer(), TerrainDeSportVectorLayer()]
+        return [
+            FullDataFeatureVectorLayer(layer)
+            for layer in FullDataLayer.objects.filter(include_in_tilejson=True)
+        ]
+        # return [FullDataFeatureVectorLayer(layer) for layer in FullDataLayer.objects.all()]
+        return [
+            RegionVectorLayer(),
+            DepartementVectorLayer(),
+            EPCIVectorLayer(),
+            CommuneVectorLayer(),
+            SurfaceHydrographiqueVectorLayer(),
+            BatimentVectorLayer(),
+            TronconRouteVectorLayer(),
+            VoieFerreeVectorLayer(),
+            TerrainDeSportVectorLayer(),
+        ]
 
 
 class LayerView(MultipleVectorLayers, MVTView):
     """Multiple tiles in same time, each Layer instance is a tile layer"""
 
     def get_layers_last_update(self):
-        last_updated_layer = FullDataLayer.objects.all().order_by("-update_datetime").only('update_datetime').first()
+        last_updated_layer = (
+            FullDataLayer.objects.all()
+            .order_by("-update_datetime")
+            .only("update_datetime")
+            .first()
+        )
         return last_updated_layer.update_datetime if last_updated_layer else None
 
     def get_content_status(self, z, x, y):
-        cache_key = md5(f"tilejson-{self.get_layers_last_update()}-{z}-{x}-{y}".encode()).hexdigest()
-        if cache.has_key(cache_key):
+        cache_key = md5(
+            f"tilejson-{self.get_layers_last_update()}-{z}-{x}-{y}".encode()
+        ).hexdigest()
+        if cache.has_key(cache_key):  # NOQA W601
             tile, status = cache.get(cache_key), 200
 
         else:
@@ -68,6 +93,7 @@ class LayerView(MultipleVectorLayers, MVTView):
 
 class LayerTileJSONView(MultipleVectorLayers, TileJSONView):
     """Simple model TileJSON View"""
+
     vector_tile_tilejson_name = "My layers dataset"
     vector_tile_tilejson_attribution = "@IGN - BD Topo 12/2022"
     vector_tile_tilejson_description = "My dataset"
