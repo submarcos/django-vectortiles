@@ -9,18 +9,9 @@ from rest_framework.response import Response
 
 from test_vectortiles.test_app.models import Feature, FullDataLayer
 from test_vectortiles.test_app.vt_layers import (
-    BatimentVectorLayer,
-    CommuneVectorLayer,
-    DepartementVectorLayer,
-    EPCIVectorLayer,
     FeatureLayerFilteredByDateVectorLayer,
     FeatureVectorLayer,
-    FullDataFeatureVectorLayer,
-    RegionVectorLayer,
-    SurfaceHydrographiqueVectorLayer,
-    TerrainDeSportVectorLayer,
-    TronconRouteVectorLayer,
-    VoieFerreeVectorLayer,
+    FullDataFeatureVectorLayer, CityCentroidVectorLayer,
 )
 from vectortiles.mixins import BaseVectorTileView
 from vectortiles.rest_framework.renderers import MVTRenderer
@@ -41,9 +32,9 @@ class FeatureView(FeatureVectorLayers, MVTView):
 class FeatureTileJSONView(FeatureVectorLayers, TileJSONView):
     """Simple model TileJSON View"""
 
-    vector_tile_tilejson_name = "My feature dataset"
-    vector_tile_tilejson_attribution = "@IGN - BD Topo 12/2022"
-    vector_tile_tilejson_description = "My dataset"
+    name = "My feature dataset"
+    attribution = "@IGN - BD Topo 12/2022"
+    description = "My dataset"
 
 
 class MultipleVectorLayers:
@@ -51,19 +42,7 @@ class MultipleVectorLayers:
         return [
             FullDataFeatureVectorLayer(layer)
             for layer in FullDataLayer.objects.filter(include_in_tilejson=True)
-        ]
-        # return [FullDataFeatureVectorLayer(layer) for layer in FullDataLayer.objects.all()]
-        return [
-            RegionVectorLayer(),
-            DepartementVectorLayer(),
-            EPCIVectorLayer(),
-            CommuneVectorLayer(),
-            SurfaceHydrographiqueVectorLayer(),
-            BatimentVectorLayer(),
-            TronconRouteVectorLayer(),
-            VoieFerreeVectorLayer(),
-            TerrainDeSportVectorLayer(),
-        ]
+        ] + [CityCentroidVectorLayer()]
 
 
 class LayerView(MultipleVectorLayers, MVTView):
@@ -94,9 +73,13 @@ class LayerView(MultipleVectorLayers, MVTView):
 class LayerTileJSONView(MultipleVectorLayers, TileJSONView):
     """Simple model TileJSON View"""
 
-    vector_tile_tilejson_name = "My layers dataset"
-    vector_tile_tilejson_attribution = "@IGN - BD Topo 12/2022"
-    vector_tile_tilejson_description = "My dataset"
+    name = "My layers dataset"
+    attribution = "@IGN - BD Topo 12/2022"
+    legend = "https://avatars.githubusercontent.com/u/7448208?s=96&v=4"
+    description = "My dataset"
+    center = [1.77, 44.498, 8]
+    min_zoom = 6
+    max_zoom = 18
 
     def get_tile_url(self):
         return reverse("layer-pattern")
@@ -128,9 +111,9 @@ class FeatureViewSet(BaseVectorTileView, viewsets.ModelViewSet):
 
 
 class TileJSONFeatureView(TileJSONView):
-    vector_tile_tilejson_name = "Feature tileset"
-    vector_tile_tilejson_description = "feature tileset"
-    vector_tile_tilejson_attribution = "© JEC"
+    name = "Feature tileset"
+    description = "feature tileset"
+    attribution = "© JEC"
 
     def get_tile_url(self):
         return reverse("feature-pattern")

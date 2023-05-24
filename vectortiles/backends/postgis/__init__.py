@@ -15,28 +15,26 @@ class VectorLayer(BaseVectorLayerMixin):
         # keep features intersecting tile
         filters = {
             # GeoFuncMixin implicitly transforms to SRID of geom
-            f"{self.vector_tile_geom_name}__intersects": MakeEnvelope(
-                xmin, ymin, xmax, ymax, 3857
-            )
+            f"{self.geom_field}__intersects": MakeEnvelope(xmin, ymin, xmax, ymax, 3857)
         }
         features = features.filter(**filters)
         # annotate prepared geometry for MVT
         features = features.annotate(
             geom_prepared=AsMVTGeom(
-                Transform(self.vector_tile_geom_name, 3857),
+                Transform(self.geom_field, 3857),
                 MakeEnvelope(xmin, ymin, xmax, ymax, 3857),
-                self.vector_tile_extent,
-                self.vector_tile_buffer,
-                self.vector_tile_clip_geom,
+                self.tile_extent,
+                self.tile_buffer,
+                self.clip_geom,
             )
         )
         fields = (
-            self.vector_tile_fields + ("geom_prepared",)
-            if self.vector_tile_fields
+            self.get_tile_fields() + ("geom_prepared",)
+            if self.get_tile_fields()
             else ("geom_prepared",)
         )
         # limit feature number if limit provided
-        limit = self.get_vector_tile_queryset_limit()
+        limit = self.get_queryset_limit()
         if limit:
             features = features[:limit]
         # keep values to include in tile (extra included_fields + geometry)
@@ -49,8 +47,8 @@ class VectorLayer(BaseVectorLayerMixin):
                     sql
                 ),
                 params=[
-                    self.get_vector_tile_layer_name(),
-                    self.vector_tile_extent,
+                    self.get_id(),
+                    self.tile_extent,
                     "geom_prepared",
                     *params,
                 ],

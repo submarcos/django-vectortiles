@@ -42,3 +42,4 @@ class FulDataFeatureAdmin(OSMGeoAdmin):
         "layer",
     )
     list_filter = ("layer",)
+    search_fields = ("id", "properties__cpx_toponyme_de_cours_d_eau")

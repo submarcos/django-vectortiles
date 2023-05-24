@@ -13,17 +13,21 @@
         }
     </style>
     <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet'/>
+    {#    <link href='https://watergis.github.io/maplibre-gl-legend/maplibre-gl-legend.css' rel='stylesheet' />#}
+
 </head>
 <body>
 <div id="map" style="width: 100%; height: 100vh"></div>
 <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
+{#<script src="https://watergis.github.io/maplibre-gl-legend/maplibre-gl-legend.js"></script>#}
+
 <script>
     var map = new maplibregl.Map({
         container: 'map',
         hash: true,
         style: 'https://demotiles.maplibre.org/style.json', // stylesheet location
-        center: [-74.5, 40], // starting position [lng, lat]
-        zoom: 1 // starting zoom
+        center: [1.77, 44.498], // starting position [lng, lat]
+        zoom: 8 // starting zoom
     });
     var nav = new maplibregl.NavigationControl({visualizePitch: true});
     map.addControl(nav, 'top-right');
@@ -76,85 +80,19 @@
 
             }
         );
+
         map.addLayer(
             {
-                'id': 'commune',
+                'id': 'troncon_hydrographique',
                 'type': 'line',
-                'filter': ['==', ['geometry-type'], 'Polygon'],
                 'source': 'layers',
-                'source-layer': 'commune',
-                'layout': {
-                    'line-cap': 'round',
-                    'line-join': 'round'
-                },
+                'source-layer': 'troncon_hydrographique',
                 'paint': {
-                    'line-opacity': 0.4,
-                    'line-color': '#3636a8',
-                    'line-width': 0.5,
-                    'line-dasharray': [10, 10]
+                    'line-color': '#A7D4E8',
                 }
 
             }
         );
-        map.addLayer(
-            {
-                'id': 'epci',
-                'type': 'line',
-                'filter': ['==', ['geometry-type'], 'Polygon'],
-                'source': 'layers',
-                'source-layer': 'epci',
-                'layout': {
-                    'line-cap': 'round',
-                    'line-join': 'round'
-                },
-                'paint': {
-                    'line-opacity': 0.6,
-                    'line-color': '#ffee24',
-                    'line-width': 0.6
-                }
-
-            }
-        );
-
-        map.addLayer(
-            {
-                'id': 'departement',
-                'type': 'line',
-                'filter': ['==', ['geometry-type'], 'Polygon'],
-                'source': 'layers',
-                'source-layer': 'departement',
-                'layout': {
-                    'line-cap': 'round',
-                    'line-join': 'round'
-                },
-                'paint': {
-                    'line-opacity': 0.8,
-                    'line-color': '#479c47',
-                    'line-width': 0.8
-                }
-
-            }
-        );
-        map.addLayer(
-            {
-                'id': 'region',
-                'type': 'line',
-                'filter': ['==', ['geometry-type'], 'Polygon'],
-                'source': 'layers',
-                'source-layer': 'region',
-                'layout': {
-                    'line-cap': 'round',
-                    'line-join': 'round'
-                },
-                'paint': {
-                    'line-opacity': 0.9,
-                    'line-color': '#b12929',
-                    'line-width': 1
-                }
-
-            }
-        );
-
         map.addLayer(
             {
                 'id': 'surface_hydrographique',
@@ -175,15 +113,70 @@
                 'type': 'line',
                 'source': 'layers',
                 'source-layer': 'troncon_de_voie_ferree',
-                'layout': {
-                    'line-cap': 'round',
-                    'line-join': 'round'
-                },
-                'paint': {
-                    'line-opacity': 0.5,
-                    'line-color': '#851b1b',
-                    'line-width': 2,
-                    'line-dasharray': [2, 2]
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["!=", "nature", "Voie de service"],
+                ],
+                "paint": {
+                    "line-color": "#bbb",
+                    "line-width": {"base": 1.4, "stops": [[14, 0.4], [15, 0.75], [20, 2]]}
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'troncon_de_voie_ferree_hatching',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_voie_ferree',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["!=", "nature", "Voie de service"],
+                ],
+                "paint": {
+                    "line-color": "#bbb",
+                    "line-dasharray": [0.2, 8],
+                    "line-width": {"base": 1.4, "stops": [[14.5, 0], [15, 3], [20, 8]]}
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'troncon_de_voie_ferree_service',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_voie_ferree',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["==", "nature", "Voie de service"],
+                ],
+                "paint": {
+                    "line-color": "hsla(0, 0%, 73%, 0.77)",
+                    "line-width": {"base": 1.4, "stops": [[14, 0.4], [20, 1]]}
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'troncon_de_voie_ferree__service_hatching',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_voie_ferree',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["==", "nature", "Voie de service"],
+                ],
+                "paint": {
+                    "line-color": "hsla(0, 0%, 73%, 0.68)",
+                    "line-dasharray": [0.2, 8],
+                    "line-width": {"base": 1.4, "stops": [[14.5, 0], [15, 2], [20, 6]]}
                 }
 
             }
@@ -194,6 +187,12 @@
                 'type': 'line',
                 'source': 'layers',
                 'source-layer': 'troncon_de_route',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["!=", "nature", "Type autoroutier"],
+                    ["!=", "nature", "Bretelle"],
+                ],
                 'layout': {
                     'line-cap': 'round',
                     'line-join': 'round'
@@ -204,27 +203,54 @@
                         'Type autoroutier', '#FF0000',              // if 'GP' then yellow
                         'XX', 'black',               // if 'XX' then black
                         'white'],
-                    'line-width': {
-                        "type": "exponential",
-                        "base": 2,
-                        "stops": [
-                            [12, 1],
-                            [13, 1.2],
-                            [14, 5],
-                            [15, 7],
-                            [16, 8],
-                            [17, 9],
-                            [18, 10],
-                            [19, 12],
-                            [20, 13],
-                            [21, 14],
-                            [22, 15],
-                        ]
+                    'line-width': {"base": 1.2, "stops": [[13.5, 0], [14, 2.5], [20, 11.5]]}
+                }
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'autoroute',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_route',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["==", "nature", "Type autoroutier"],
+                ],
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-opacity': 1,
+                    'line-color': '#fc8',
+                    'line-width': {"base": 1.2, "stops": [[6.5, 0], [7, 0.5], [20, 18]]}
+                }
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'autoroute_bretelles',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_route',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["==", "nature", "Bretelle"],
+                ],
+                "layout": {"line-cap": "round", "line-join": "round"},
+                "paint": {
+                    "line-color": "#fc8",
+                    "line-width": {
+                        "base": 1.2,
+                        "stops": [[12.5, 0], [13, 1.5], [14, 2.5], [20, 11.5]]
                     }
                 }
             }
         );
-                map.addLayer(
+        map.addLayer(
             {
                 'id': 'terrain_de_sport',
                 'type': 'fill',
@@ -285,9 +311,9 @@
                 'paint': {
                     'fill-extrusion-color': '#F1EAD8',
 
-// Use an 'interpolate' expression to
-// add a smooth transition effect to
-// the buildings as the user zooms in.
+                    // Use an 'interpolate' expression to
+                    // add a smooth transition effect to
+                    // the buildings as the user zooms in.
                     'fill-extrusion-height': [
                         'interpolate',
                         ['linear'],
@@ -311,28 +337,159 @@
 
             }
         );
+                map.addLayer(
+            {
+                'id': 'commune',
+                'type': 'line',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'commune',
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-opacity': 0.4,
+                    'line-color': '#3636a8',
+                    'line-width': 0.5,
+                    'line-dasharray': [10, 10]
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'departement',
+                'type': 'line',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'departement',
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-opacity': 0.8,
+                    'line-color': '#479c47',
+                    'line-width': 0.8
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'region',
+                'type': 'line',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'region',
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-opacity': 0.9,
+                    'line-color': '#b12929',
+                    'line-width': 1
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                "id": "commune_border",
+                "type": "symbol",
+                "source": "layers",
+                "source-layer": "commune",
+                "minzoom": 13,
+                "layout": {
+                    "symbol-placement": "line",
+                    "symbol-spacing": 350,
+                    "text-field": "{nom}",
+                    "text-font": ["Noto Sans Italic"],
+                    "text-letter-spacing": 0.2,
+                    "text-max-width": 5,
+                    "text-rotation-alignment": "map",
+                    "text-size": 10
+                },
+                "paint": {
+                    "text-color": "#3636a8",
+                    "text-halo-color": "rgba(255,255,255,0.7)",
+                    "text-halo-width": 1
+                }
+            }
+        );
+        map.addLayer(
+            {
+                "id": "commune_nom",
+                "type": "symbol",
+                "source": "layers",
+                "source-layer": "commune_centre",
+                "minzoom": 10,
+                "maxzoom": 12,
+                "layout": {
+                    "symbol-placement": "point",
+                    "symbol-spacing": 350,
+                    "text-field": "{nom}",
+                    "text-font": ["Noto Sans Italic"],
+                    "text-letter-spacing": 0.2,
+                    "text-max-width": 5,
+                    "text-rotation-alignment": "map",
+                    "text-size": 14
+                },
+                "paint": {
+                    "text-color": "#3636a8",
+                    "text-halo-color": "rgba(255,255,255,0.7)",
+                    "text-halo-width": 1.5
+                }
+            }
+        );
+                map.addLayer(
+            {
+                "id": "eau_nom",
+                "type": "symbol",
+                "source": "layers",
+                "source-layer": "troncon_hydrographique",
+                "minzoom": 13,
+                "layout": {
+                    "symbol-placement": "line",
+                    "symbol-spacing": 350,
+                    "text-field": "{nom}",
+                    "text-font": ["Noto Sans Italic"],
+                    "text-letter-spacing": 0.2,
+                    "text-max-width": 5,
+                    "text-rotation-alignment": "map",
+                    "text-size": 14
+                },
+                "paint": {
+                    "text-color": "#74aee9",
+                    "text-halo-color": "rgba(255,255,255,0.7)",
+                    "text-halo-width": 1.5
+                }
+            }
+        );
         // Create a popup, but don't add it to the map yet.
         var popup = new maplibregl.Popup({
             closeButton: false,
             closeOnClick: false
         });
 
-        map.on('mouseenter', 'city-centroid', function (e) {
-// Change the cursor style as a UI indicator.
+        map.on('mouseenter', 'commune_nom', function (e) {
+            // Change the cursor style as a UI indicator.
             map.getCanvas().style.cursor = 'pointer';
-
+            console.log(e.features);
             var coordinates = e.features[0].geometry.coordinates.slice();
-            var description = e.features[0].properties.name;
+            var description = `${e.features[0].properties.nom} (${e.features[0].properties.population} hab.)`;
 
-// Ensure that if the map is zoomed out such that multiple
-// copies of the feature are visible, the popup appears
-// over the copy being pointed to.
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
             }
 
-// Populate the popup and set its coordinates
-// based on the feature found.
+            // Populate the popup and set its coordinates
+            // based on the feature found.
             popup.setLngLat(coordinates).setHTML(description).addTo(map);
         });
 
@@ -340,7 +497,8 @@
             map.getCanvas().style.cursor = '';
             popup.remove();
         });
-    });
+    }
+);
 </script>
 </body>
 </html>
