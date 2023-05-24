@@ -13,20 +13,18 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: ['3.6', '3.10']
-        django-version: ['2.2.*', '3.2.*', '4.1.*']
+        python-version: ['3.7', '3.11']
+        django-version: ['3.2.*', '4.2.*']
         postgis-image: ['postgis/postgis:10-2.5', 'postgis/postgis:11-2.5', 'postgis/postgis:latest']
         exclude:
-          - python-version: '3.10'  # 3.10 is not supported by django 2.2
-            django-version: '2.2.*'
-          - postgis-image: 'postgis/postgis:11-2.5'
-            django-version: '2.2.*'  # test only with 10-2.5 and latest
           - postgis-image: 'postgis/postgis:11-2.5'
             django-version: '3.2.*'  # test only with 10-2.5 and latest
           - python-version: '3.6'
-            django-version: '4.1.*'  # Django 4.1 supports only python >= 3.8
+            django-version: '4.2.*'  # Django 4.2 supports only python >= 3.8
           - postgis-image: 'postgis/postgis:10-2.5'
-            django-version: '4.1.*'  # Django 4.1 supports only postgres >= 11
+            django-version: '4.2.*'  # Django 4.2 supports only postgres >= 12
+          - postgis-image: 'postgis/postgis:11-2.5'
+            django-version: '4.2.*'  # Django 4.2 supports only postgres >= 12
 
     services:
       postgres:
