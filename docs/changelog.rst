@@ -1,8 +1,11 @@
 CHANGELOG
 =========
 
-1.0.0.a1
---------
+1.0.0-beta
+----------
+
+* Drop python 3.6 and Django 2.2
+* Add python 3.11 and Django 4.2
 
 * Features
 
