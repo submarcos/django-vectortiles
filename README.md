@@ -108,9 +108,10 @@ urlpatterns = [
     path('tiles/<int:z>/<int:x>/<int:y>', views.FeatureTileView.as_view(), name="feature-tile"),
     path("feature/tiles.json", views.FeatureTileJSONView.as_view(), name="feature-tilejson"),
     ...
+]
 
-    # in your settings file
-    ALLOWED_HOSTS = [
+# in your settings file
+ALLOWED_HOSTS = [
     "a.tiles.xxxx",
     "b.tiles.xxxx",
     "c.tiles.xxxx",
@@ -124,16 +125,14 @@ VECTOR_TILES_URLS = [
     ...
 ]
 
-```
-
 #### Development
 
 ##### With docker and docker-compose
 
 ```bash
-docker-compose build
+docker compose build
 # docker-compose up
-docker-compose run /code/venv/bin/python ./manage.py test
+docker compose run /code/venv/bin/python ./manage.py test
 ```
 
 ##### Local
