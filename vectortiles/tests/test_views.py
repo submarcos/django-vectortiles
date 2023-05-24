@@ -31,7 +31,7 @@ class VectorTileTestCase(VectorTileBaseTest):
 
     def test_layer(self):
         self.maxDiff = None
-        response = self.client.get(reverse("layer", args=(self.layer.pk, 0, 0, 0)))
+        response = self.client.get(reverse("layer", args=(0, 0, 0)))
         self.assertEqual(response.status_code, 200)
         content = mapbox_vector_tile.decode(response.content)
         self.assertDictEqual(
@@ -217,7 +217,7 @@ class VectorTileTestCase(VectorTileBaseTest):
 class VectorTileTileJSONTestCase(VectorTileBaseTest):
     def test_layer(self):
         self.maxDiff = None
-        response = self.client.get(reverse("layer-tilejson", args=(self.layer.pk,)))
+        response = self.client.get(reverse("layer-tilejson"))
         self.assertEqual(response.status_code, 200)
         content = response.json()
         self.assertDictEqual(

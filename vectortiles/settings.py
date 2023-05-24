@@ -5,4 +5,4 @@ VECTOR_TILES_CONTENT_TYPE = getattr(
 )
 VECTOR_TILES_EXTENSION = getattr(settings, "VECTOR_TILES_EXTENSION", "mvt")
 VECTOR_TILES_BACKEND = "vectortiles.backends.postgis"  # to use python backend, set to 'vectortiles.backends.python'
-VECTOR_TILES_HOSTNAMES = getattr(settings, "VECTOR_TILES_HOSTNAMES", None)
+VECTOR_TILES_URLS = getattr(settings, "VECTOR_TILES_URLS", None)

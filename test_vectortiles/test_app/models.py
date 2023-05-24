@@ -57,4 +57,5 @@ class FullDataFeature(models.Model):
         ordering = ("id",)
         indexes = [
             GinIndex(fields=["properties"], name="feature_properties_gin"),
+            models.Index(models.F("properties__nature"), name="properties_nature"),
         ]

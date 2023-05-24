@@ -29,7 +29,7 @@ pip install django-vectortiles[python]
 
 ### Examples
 
-* assuming you have django.contrib.gis in your INSTALLED_APPS and a gis compatible database backend
+* assuming you have ```django.contrib.gis``` in your ```INSTALLED_APPS``` and a gis compatible database backend
 
 ```python
 # in your app models.py
@@ -78,42 +78,52 @@ urlpatterns = [
 ]
 ```
 
-#### Related model:
+#### Use TileJSON and multiple domains:
 
 ```python
 # in your view file
 
-from django.views.generic import DetailView
-from vectortiles.mixins import BaseVectorTileView
-from vectortiles.postgis.views import MVTView
-from yourapp.models import Layer
+from vectortiles.views import TileJSONView
+from django.urls import reverse
 
 
-class LayerTileView(MVTView, DetailView):
-    model = Layer
-    vector_tile_fields = ('other_field_to_include', )
+class FeatureTileJSONView(TileJSONView):
+    """Simple model TileJSON View"""
 
-    def get_vector_tile_layer_name(self):
-        return self.get_object().name
+    name = "My features dataset"
+    attribution = "@JEC Data"
+    description = "My dataset"
 
-    def get_vector_tile_queryset(self):
-        return self.get_object().features.all()
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return BaseVectorTileView.get(self,request=request, z=kwargs.get('z'), x=kwargs.get('x'), y=kwargs.get('y'))
+    def get_tile_url(self):
+        """ Base MVTView Url used to generates urls in TileJSON in a.tiles.xxxx/{z}/{x}/{y} format """
+        return str(reverse("feature-tile", args=(0, 0, 0))).replace("0/0/0", "{z}/{x}/{y}")
 
 
 # in your urls file
 from django.urls import path
 from yourapp import views
 
-
 urlpatterns = [
     ...
-    path('layer/<int:pk>/tile/<int:z>/<int:x>/<int:y>', views.LayerTileView.as_view(), name="layer-tile"),
+    path('tiles/<int:z>/<int:x>/<int:y>', views.FeatureTileView.as_view(), name="feature-tile"),
+    path("feature/tiles.json", views.FeatureTileJSONView.as_view(), name="feature-tilejson"),
+    ...
+
+    # in your settings file
+    ALLOWED_HOSTS = [
+    "a.tiles.xxxx",
+    "b.tiles.xxxx",
+    "c.tiles.xxxx",
     ...
 ]
+
+VECTOR_TILES_URLS = [
+    "https://a.tiles.xxxx",
+    "https://b.tiles.xxxx",
+    "https://c.tiles.xxxx",
+    ...
+]
+
 ```
 
 #### Development
@@ -132,6 +142,7 @@ docker-compose run /code/venv/bin/python ./manage.py test
 * Install geodjango requirements
 * Have a postgresql / postgis 2.4+ enabled database
 * Use a virtualenv
+
 ```bash
 pip install .[dev] -U
 ```
