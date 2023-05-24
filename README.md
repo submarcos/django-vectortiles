@@ -46,9 +46,10 @@ class Feature(models.Model):
 #### Simple Example:
 
 ```python
+from yourapp.models import Feature
+
 # in a vector_layers.py file
 from vectortiles import VectorLayer
-from yourapp.models import Feature
 
 
 class FeatureVectorLayer(VectorLayer):
@@ -58,8 +59,9 @@ class FeatureVectorLayer(VectorLayer):
 
 # in your view file
 
-from vectortiles.views import MVTView
 from yourapp.vector_layers import FeatureVectorLayer
+
+from vectortiles.views import MVTView
 
 
 class FeatureTileView(MVTView):
@@ -69,7 +71,6 @@ class FeatureTileView(MVTView):
 # in your urls file
 from django.urls import path
 from yourapp import views
-
 
 urlpatterns = [
     ...
@@ -83,8 +84,9 @@ urlpatterns = [
 ```python
 # in your view file
 
-from vectortiles.views import TileJSONView
 from django.urls import reverse
+
+from vectortiles.views import TileJSONView
 
 
 class FeatureTileJSONView(TileJSONView):

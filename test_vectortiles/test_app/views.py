@@ -9,9 +9,10 @@ from rest_framework.response import Response
 
 from test_vectortiles.test_app.models import Feature, FullDataLayer
 from test_vectortiles.test_app.vt_layers import (
+    CityCentroidVectorLayer,
     FeatureLayerFilteredByDateVectorLayer,
     FeatureVectorLayer,
-    FullDataFeatureVectorLayer, CityCentroidVectorLayer,
+    FullDataFeatureVectorLayer,
 )
 from vectortiles.mixins import BaseVectorTileView
 from vectortiles.rest_framework.renderers import MVTRenderer

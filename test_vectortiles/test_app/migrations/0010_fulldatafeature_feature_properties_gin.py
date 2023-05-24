@@ -5,7 +5,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("test_app", "0009_alter_fulldatalayer_options"),
     ]

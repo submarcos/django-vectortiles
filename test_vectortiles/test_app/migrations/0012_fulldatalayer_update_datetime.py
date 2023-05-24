@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("test_app", "0011_fulldatalayer_include_in_tilejson"),
     ]
