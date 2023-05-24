@@ -7,7 +7,7 @@ from django.db.models.fields.json import KeyTextTransform
 from django.db.models.functions import Cast
 from django.utils.text import slugify
 
-from test_vectortiles.test_app.models import Feature, Layer, FullDataLayer
+from test_vectortiles.test_app.models import Feature, FullDataLayer, Layer
 from vectortiles import VectorLayer
 
 
@@ -53,8 +53,6 @@ class FeatureLayerVectorLayer(VectorLayer):
         return self.instance.description
 
 
-
-
 class FeatureLayerFilteredByDateVectorLayer(VectorLayer):
     name = "features"
     tile_fields = ("name",)
@@ -80,13 +78,16 @@ class FullDataFeatureVectorLayer(VectorLayer):
                 "chef_lieu_departement",
             )
         elif self.instance.name == "troncon_hydrographique":
-            return ("nom", )
+            return ("nom",)
         elif self.instance.name == "parc_ou_reserve":
             return ("nom", "nature")
         elif self.instance.name == "departement":
             return ("nom", "code_insee", "code_insee_region")
         elif self.instance.name == "region":
-            return ("nom", "code_insee",)
+            return (
+                "nom",
+                "code_insee",
+            )
         elif self.instance.name == "troncon_voie_ferree":
             return ("nature", "voies", "etat", "position")
         elif self.instance.name == "surface_hydrographique":
@@ -180,23 +181,39 @@ class FullDataFeatureVectorLayer(VectorLayer):
                 ),
             )
         elif self.instance.name == "troncon_hydrographique":
-            qs = qs.exclude(properties__contains={"position_par_rapport_au_sol": "-1", })
-            qs = qs.annotate(nom=KeyTextTransform("cpx_toponyme_de_cours_d_eau", "properties"))
+            qs = qs.exclude(
+                properties__contains={
+                    "position_par_rapport_au_sol": "-1",
+                }
+            )
+            qs = qs.annotate(
+                nom=KeyTextTransform("cpx_toponyme_de_cours_d_eau", "properties")
+            )
         elif self.instance.name == "parc_ou_reserve":
-            qs = qs.annotate(nom=KeyTextTransform("toponyme", "properties"),
-                             nature=KeyTextTransform("nature", "properties"))
+            qs = qs.annotate(
+                nom=KeyTextTransform("toponyme", "properties"),
+                nature=KeyTextTransform("nature", "properties"),
+            )
         elif self.instance.name == "departement":
-            qs = qs.annotate(nom=KeyTextTransform("nom_officiel", "properties"),
-                             code_insee=KeyTextTransform("code_insee", "properties"),
-                             code_insee_region=KeyTextTransform("code_insee_de_la_region", "properties"))
+            qs = qs.annotate(
+                nom=KeyTextTransform("nom_officiel", "properties"),
+                code_insee=KeyTextTransform("code_insee", "properties"),
+                code_insee_region=KeyTextTransform(
+                    "code_insee_de_la_region", "properties"
+                ),
+            )
         elif self.instance.name == "region":
-            qs = qs.annotate(nom=KeyTextTransform("nom_officiel", "properties"),
-                             code_insee=KeyTextTransform("code_insee", "properties"))
+            qs = qs.annotate(
+                nom=KeyTextTransform("nom_officiel", "properties"),
+                code_insee=KeyTextTransform("code_insee", "properties"),
+            )
         elif self.instance.name == "troncon_voie_ferree":
-            qs = qs.annotate(nature=KeyTextTransform("nature", "properties"),
-                             voies=KeyTextTransform("nombre_de_voies", "properties"),
-                             etat=KeyTextTransform("etat_de_l_objet", "properties"),
-                             position=KeyTextTransform("position_par_rapport_au_sol", "properties"))
+            qs = qs.annotate(
+                nature=KeyTextTransform("nature", "properties"),
+                voies=KeyTextTransform("nombre_de_voies", "properties"),
+                etat=KeyTextTransform("etat_de_l_objet", "properties"),
+                position=KeyTextTransform("position_par_rapport_au_sol", "properties"),
+            )
         elif self.instance.name == "surface_hydrographique":
             qs = qs.annotate(nature=KeyTextTransform("nature", "properties"))
         elif self.instance.name == "terrain_de_sport":

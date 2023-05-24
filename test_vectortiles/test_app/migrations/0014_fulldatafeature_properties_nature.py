@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("test_app", "0013_alter_fulldatalayer_update_datetime"),
     ]
