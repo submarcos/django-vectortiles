@@ -32,7 +32,7 @@ setup(
     long_description=README,
     description_content_type="text/markdown",
     long_description_content_type="text/markdown",
-    packages=find_packages(),
+    packages=find_packages(exclude=['*tests', 'test*']),
     url='https://github.com/submarcos/django-vectortiles.git',
     classifiers=[
         'Environment :: Web Environment',
