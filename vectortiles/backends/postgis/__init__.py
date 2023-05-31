@@ -1,5 +1,5 @@
 from django.contrib.gis.db.models.functions import Transform
-from django.db import connection
+from django.db import connections
 
 from vectortiles.backends import BaseVectorLayerMixin
 from vectortiles.backends.postgis.functions import AsMVTGeom, MakeEnvelope
@@ -41,7 +41,7 @@ class VectorLayer(BaseVectorLayerMixin):
         features = features.values(*fields)
         # generate MVT
         sql, params = features.query.sql_with_params()
-        with connection.cursor() as cursor:
+        with connections[features.db].cursor() as cursor:
             cursor.execute(
                 "SELECT ST_ASMVT(subquery.*, %s, %s, %s) FROM ({}) as subquery".format(
                     sql
