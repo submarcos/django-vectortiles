@@ -57,7 +57,7 @@ jobs:
           pip install Django==${{ matrix.django-version }} -U;
         fi
         if [[ ${{ matrix.psycopg }} == psycopg-binary ]]; then
-          pip uninstall psycopg2-binary
+          pip uninstall psycopg2-binary;
         else
           pip install ${{ matrix.psycopg }} -U;
         fi
