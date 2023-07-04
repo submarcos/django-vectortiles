@@ -58,4 +58,3 @@ class PostgisBaseVectorTile(BaseVectorTileMixin):
             if row:
                 return row.tobytes() if type(row) == memoryview else row
             return b""
-
