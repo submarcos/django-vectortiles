@@ -60,5 +60,4 @@ class PostgisBaseVectorTile(BaseVectorTileMixin):
             elif row and type(row) == bytes:
                 return row
             else:
-                return b''
-
+                return b""
