@@ -15,6 +15,7 @@ jobs:
       matrix:
         python-version: ['3.7', '3.8', '3.11']
         django-version: ['3.2.*', '4.2.*']
+        psycopg: ['psycopg2-binary']
         postgis-image: ['postgis/postgis:10-2.5', 'postgis/postgis:11-2.5', 'postgis/postgis:latest']
         exclude:
           - postgis-image: 'postgis/postgis:11-2.5'
@@ -25,6 +26,11 @@ jobs:
             django-version: '4.2.*'  # Django 4.2 supports only postgres >= 12
           - postgis-image: 'postgis/postgis:11-2.5'
             django-version: '4.2.*'  # Django 4.2 supports only postgres >= 12
+        include:
+          - postgis-image: 'postgis/postgis:latest'
+            django-version: '4.2.*'
+            python-version: '3.11'
+            psycopg: ['psycopg-binary']
 
     services:
       postgres:
@@ -51,13 +57,21 @@ jobs:
         else
           pip install Django==${{ matrix.django-version }} -U;
         fi
+        if [[ ${{ matrix.psycopg }} == psycopg-binary ]]; then
+          pip uninstall psycopg2-binary;
+        else
+          pip install psycopg2-binary -U;
+        fi
+
     - name: Run migrations
       run: |
         python3 ./manage.py makemigrations --check
         python3 ./manage.py migrate
+
     - name: Test with coverage
       run: |
         coverage run ./manage.py test
+
     - name: Coverage upload
       run: |
         pip install codecov

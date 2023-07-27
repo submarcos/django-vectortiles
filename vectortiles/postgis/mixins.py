@@ -55,4 +55,5 @@ class PostgisBaseVectorTile(BaseVectorTileMixin):
                 ],
             )
             row = cursor.fetchone()[0]
-            return row.tobytes() if row else b""
+            # psycopg2 returns memoryview, psycopg returns bytes
+            return row.tobytes() if type(row) == memoryview else row or b""
