@@ -1,11 +1,15 @@
 CHANGELOG
 =========
 
-1.0.0-beta
+0.2.0+dev
 ----------
 
 * Drop python 3.6 and Django 2.2
 * Add python 3.11 and Django 4.2
+
+* Enhancements
+
+  * Add compatibility to use with psycopg v3
 
 * Features
 
