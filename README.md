@@ -87,6 +87,7 @@ urlpatterns = [
 from django.urls import reverse
 
 from vectortiles.views import TileJSONView
+from yourapp.vector_layers import FeatureVectorLayer
 
 
 class FeatureTileJSONView(TileJSONView):
@@ -95,6 +96,7 @@ class FeatureTileJSONView(TileJSONView):
     name = "My features dataset"
     attribution = "@JEC Data"
     description = "My dataset"
+    layer_classes = [FeatureVectorLayer]
 
     def get_tile_url(self):
         """ Base MVTView Url used to generates urls in TileJSON in a.tiles.xxxx/{z}/{x}/{y} format """
