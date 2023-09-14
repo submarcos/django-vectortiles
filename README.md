@@ -65,7 +65,7 @@ from vectortiles.views import MVTView
 
 
 class FeatureTileView(MVTView):
-    layers = [FeatureVectorLayer()]
+    layer_classes = [FeatureVectorLayer]
 
 
 # in your urls file
@@ -110,9 +110,10 @@ urlpatterns = [
     path('tiles/<int:z>/<int:x>/<int:y>', views.FeatureTileView.as_view(), name="feature-tile"),
     path("feature/tiles.json", views.FeatureTileJSONView.as_view(), name="feature-tilejson"),
     ...
+]
 
-    # in your settings file
-    ALLOWED_HOSTS = [
+# in your settings file
+ALLOWED_HOSTS = [
     "a.tiles.xxxx",
     "b.tiles.xxxx",
     "c.tiles.xxxx",
@@ -123,7 +124,6 @@ VECTOR_TILES_URLS = [
     "https://a.tiles.xxxx",
     "https://b.tiles.xxxx",
     "https://c.tiles.xxxx",
-    ...
 ]
 
 ```
@@ -139,6 +139,8 @@ django-vectortiles can be used with DRF if `renderer_classes` of the view is ove
 #### Development
 
 ##### With docker and docker-compose
+
+Copy ```.env.dist``` to ```.env``` and fill ```SECRET_KEY``` and ```POSTGRES_PASSWORD```
 
 ```bash
 docker-compose build

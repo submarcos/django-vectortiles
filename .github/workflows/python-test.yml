@@ -10,18 +10,23 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    env:
+      LANG: C.UTF-8
+      SECRET_KEY: secret-for-ci-only
+      env:
+        POSTGRES_PASSWORD: ci_test
+        POSTGRES_USER: ci_test
+        POSTGRES_DB: ci_test
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.11']
+        python-version: ['3.8', '3.11']
         django-version: ['3.2.*', '4.2.*']
         psycopg: ['psycopg2-binary']
         postgis-image: ['postgis/postgis:10-2.5', 'postgis/postgis:11-2.5', 'postgis/postgis:latest']
         exclude:
           - postgis-image: 'postgis/postgis:11-2.5'
             django-version: '3.2.*'  # test only with 10-2.5 and latest
-          - python-version: '3.7'
-            django-version: '4.2.*'  # Django 4.2 supports only python >= 3.8
           - postgis-image: 'postgis/postgis:10-2.5'
             django-version: '4.2.*'  # Django 4.2 supports only postgres >= 12
           - postgis-image: 'postgis/postgis:11-2.5'
@@ -36,9 +41,9 @@ jobs:
       postgres:
         image: ${{ matrix.postgis-image }}
         env:
-          POSTGRES_PASSWORD: travis_ci_test
-          POSTGRES_USER: travis_ci_test
-          POSTGRES_DB: travis_ci_test
+          POSTGRES_PASSWORD: ci_test
+          POSTGRES_USER: ci_test
+          POSTGRES_DB: ci_test
         ports:
           - 5432:5432
     steps:
