@@ -7,13 +7,8 @@ class BaseVectorView:
     layer_classes = None
     layers = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if not self.layer_classes:
-            self.layer_classes = []
-
     def get_layer_classes(self):
-        return self.layer_classes
+        return self.layer_classes or []
 
     def get_layer_class_kwargs(self):
         return {}
