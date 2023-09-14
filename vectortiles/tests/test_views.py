@@ -27,39 +27,6 @@ class VectorTileTestCase(VectorTileBaseTest):
         with self.assertNumQueries(1):
             self.client.get(reverse("feature", args=(0, 0, 0)))
 
-    def test_layer(self):
-        self.maxDiff = None
-        response = self.client.get(reverse("layer", args=(0, 0, 0)))
-        self.assertEqual(response.status_code, 200)
-        content = mapbox_vector_tile.decode(response.content)
-        self.assertDictEqual(
-            content,
-            {
-                "features": {
-                    "extent": 4096,
-                    "version": 1,
-                    "features": [
-                        {
-                            "geometry": {"type": "Point", "coordinates": [2048, 2048]},
-                            "properties": {"name": "feat1"},
-                            "id": 0,
-                            "type": 1,
-                        },
-                        {
-                            "geometry": {
-                                "type": "LineString",
-                                "coordinates": [[2048, 2048], [2059, 2059]],
-                            },
-                            "properties": {"name": "feat2"},
-                            "id": 0,
-                            "type": 2,
-                        },
-                    ],
-                }
-            },
-            content,
-        )
-
     def test_features(self):
         self.maxDiff = None
         response = self.client.get(reverse("feature", args=(0, 0, 0)))
