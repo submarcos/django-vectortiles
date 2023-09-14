@@ -9,7 +9,7 @@ class VectorLayer(BaseVectorLayerMixin):
     def get_tile(self, x, y, z):
         if not self.check_in_zoom_levels(z):
             return b""
-        features = self.get_queryset(z, x, y)
+        features = self.get_vector_tile_queryset(z, x, y)
         # get tile coordinates from x, y and z
         xmin, ymin, xmax, ymax = self.get_bounds(x, y, z)
         # keep features intersecting tile

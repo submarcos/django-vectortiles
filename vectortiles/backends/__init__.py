@@ -75,6 +75,10 @@ class BaseVectorLayerMixin:
             return self.queryset
         return self.model.objects.all()
 
+    def get_vector_tile_queryset(self, *args, **kwargs):
+        """Get feature queryset in tile dynamically"""
+        return self.get_queryset()
+
     def get_queryset_limit(self):
         """Get feature limit by tile dynamically"""
         return self.queryset_limit

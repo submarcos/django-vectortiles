@@ -3,7 +3,6 @@ from django.test import TestCase
 from django.urls import reverse
 
 from test_vectortiles.test_app.models import Feature, Layer
-from test_vectortiles.test_app.vt_layers import FeatureVectorLayer
 from vectortiles.views import TileJSONView
 
 
@@ -26,9 +25,7 @@ class VectorTileTestCase(VectorTileBaseTest):
     def test_num_queries_equals_one(self):
         self.maxDiff = None
         with self.assertNumQueries(1):
-            self.client.get(
-                reverse("feature", args=(0, 0, 0))
-            )
+            self.client.get(reverse("feature", args=(0, 0, 0)))
 
     def test_layer(self):
         self.maxDiff = None
@@ -226,12 +223,12 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
             {
                 "attribution": "© JEC",
                 "description": "generated from data",
-                'bounds': [-180, -85.05112877980659, 180, 85.0511287798066],
-                'center': None,
-                'fillzoom': None,
-                'legend': None,
+                "bounds": [-180, -85.05112877980659, 180, 85.0511287798066],
+                "center": None,
+                "fillzoom": None,
+                "legend": None,
                 "maxzoom": 30,
-                'scheme': 'xyz',
+                "scheme": "xyz",
                 "minzoom": 0,
                 "name": "Layer's features tileset",
                 "tilejson": "3.0.0",
@@ -258,18 +255,18 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
             {
                 "attribution": "© JEC",
                 "description": "feature tileset",
-                'bounds': [-180, -85.05112877980659, 180, 85.0511287798066],
-                'center': None,
-                'fillzoom': None,
-                'legend': None,
+                "bounds": [-180, -85.05112877980659, 180, 85.0511287798066],
+                "center": None,
+                "fillzoom": None,
+                "legend": None,
                 "maxzoom": 30,
-                'scheme': 'xyz',
+                "scheme": "xyz",
                 "minzoom": 0,
                 "name": "Feature tileset",
                 "tilejson": "3.0.0",
                 "tiles": ["http://testserver/features/tile/{z}/{x}/{y}"],
-                "vector_layers": [
-                ],
+                "vector_layers": [],
+                "version": "1.0.0",
             },
         )
 
