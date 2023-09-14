@@ -14,10 +14,9 @@ jobs:
     env:
       LANG: C.UTF-8
       SECRET_KEY: secret-for-ci-only
-      env:
-        POSTGRES_PASSWORD: ci_test
-        POSTGRES_USER: ci_test
-        POSTGRES_DB: ci_test
+      POSTGRES_PASSWORD: ci_test
+      POSTGRES_USER: ci_test
+      POSTGRES_DB: ci_test
     strategy:
       matrix:
         python-version: ['3.8', '3.11']
