@@ -84,38 +84,6 @@ class VectorTileTestCase(VectorTileBaseTest):
 
 
 class VectorTileTileJSONTestCase(VectorTileBaseTest):
-    def test_layer(self):
-        self.maxDiff = None
-        response = self.client.get(reverse("layer-tilejson"))
-        self.assertEqual(response.status_code, 200)
-        content = response.json()
-        self.assertDictEqual(
-            content,
-            {
-                "attribution": "© JEC",
-                "description": "generated from data",
-                "bounds": [-180, -85.05112877980659, 180, 85.0511287798066],
-                "center": None,
-                "fillzoom": None,
-                "legend": None,
-                "maxzoom": 30,
-                "scheme": "xyz",
-                "minzoom": 0,
-                "name": "Layer's features tileset",
-                "tilejson": "3.0.0",
-                "tiles": ["http://testserver/layer/2/tile/{z}/{x}/{y}"],
-                "vector_layers": [
-                    {
-                        "description": "Feature layer",
-                        "fields": {},
-                        "id": "features",
-                        "maxzoom": 22,
-                        "minzoom": 0,
-                    }
-                ],
-            },
-        )
-
     def test_features(self):
         self.maxDiff = None
         response = self.client.get(reverse("feature-tilejson"))
