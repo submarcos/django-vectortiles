@@ -15,6 +15,7 @@ jobs:
       LANG: C.UTF-8
       SECRET_KEY: secret-for-ci-only
       POSTGRES_HOST: localhost
+      POSTGRES_NAME: ci_test
       POSTGRES_PASSWORD: ci_test
       POSTGRES_USER: ci_test
       POSTGRES_DB: ci_test
@@ -41,6 +42,7 @@ jobs:
       postgres:
         image: ${{ matrix.postgis-image }}
         env:
+          POSTGRES_NAME: ci_test
           POSTGRES_PASSWORD: ci_test
           POSTGRES_USER: ci_test
           POSTGRES_DB: ci_test
