@@ -264,26 +264,17 @@ class VectorTileTileJSONTestCase(VectorTileBaseTest):
                 'legend': None,
                 "maxzoom": 30,
                 'scheme': 'xyz',
-                "maxzoom": 22,
                 "minzoom": 0,
                 "name": "Feature tileset",
                 "tilejson": "3.0.0",
                 "tiles": ["http://testserver/features/tile/{z}/{x}/{y}"],
                 "vector_layers": [
-                    {
-                        "description": "Feature layer",
-                        "fields": {},
-                        "id": "features",
-                        "maxzoom": 22,
-                        "minzoom": 0,
-                    }
                 ],
             },
         )
 
     def test_tilejson_view_default(self):
         class TestView(TileJSONView):
-            layer_classes = [FeatureVectorLayer]
             tile_url = "test"
 
         instance = TestView()
