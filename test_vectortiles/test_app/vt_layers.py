@@ -26,9 +26,7 @@ class FeatureLayerVectorLayer(VectorLayer):
         self.instance = instance
 
     def get_tile(self, x, y, z):
-        cache_key = md5(
-            f"{self.get_vector_tile_layer_id()}-{z}-{x}-{y}".encode()
-        ).hexdigest()
+        cache_key = md5(f"{self.get_id()}-{z}-{x}-{y}".encode()).hexdigest()
         if cache.has_key(cache_key):  # NOQA W601
             return cache.get(cache_key)
 

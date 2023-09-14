@@ -69,12 +69,12 @@ Related model view
 
     class LayerTileView(MVTView, DetailView):
         model = Layer
-        vector_tile_fields = ('name', )
+        tile_fields = ('name', )
 
-        def get_vector_tile_layer_name(self):
+        def get_id(self):
             return self.get_object().name
 
-        def get_vector_tile_queryset(self):
+        def get_queryset(self):
             return self.get_object().features.all()
 
         def get(self, request, *args, **kwargs):

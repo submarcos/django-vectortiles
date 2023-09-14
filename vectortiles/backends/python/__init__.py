@@ -18,7 +18,7 @@ class VectorLayer(BaseVectorLayerMixin):
         if not self.check_in_zoom_levels(z):
             return b""
 
-        features = self.get_vector_tile_queryset(z, x, y)
+        features = self.get_queryset(z, x, y)
 
         # get tile coordinates from x, y and z
         west, south, east, north = self.get_bounds(x, y, z)
