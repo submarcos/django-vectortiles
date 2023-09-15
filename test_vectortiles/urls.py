@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from django.views.defaults import page_not_found
@@ -50,3 +51,9 @@ urlpatterns = [
     path("", include(router.urls)),
     path("", views.IndexView.as_view(), name="index"),
 ]
+
+
+if "debug_toolbar" in settings.INSTALLED_APPS:
+    import debug_toolbar
+
+    urlpatterns += [path("__debug__/", include(debug_toolbar.urls))]
