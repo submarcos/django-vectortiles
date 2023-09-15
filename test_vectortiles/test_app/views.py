@@ -23,7 +23,7 @@ from vectortiles.views import MVTView, TileJSONView
 
 
 class FeatureVectorLayers:
-    layers = [FeatureVectorLayer()]
+    layer_classes = [FeatureVectorLayer]
 
 
 class FeatureView(FeatureVectorLayers, MVTView):
@@ -87,7 +87,7 @@ class LayerTileJSONView(MultipleVectorLayers, TileJSONView):
 
 
 class FeatureWithDateView(MVTView):
-    layers = [FeatureLayerFilteredByDateVectorLayer()]
+    layer_classes = [FeatureLayerFilteredByDateVectorLayer]
 
 
 class FeatureAPIView(FeatureVectorLayers, MVTAPIView):
@@ -96,7 +96,7 @@ class FeatureAPIView(FeatureVectorLayers, MVTAPIView):
 
 class FeatureViewSet(BaseVectorTileView, viewsets.ModelViewSet):
     queryset = Feature.objects.all()
-    layers = [FeatureVectorLayers()]
+    layer_classes = [FeatureVectorLayers]
 
     @action(
         detail=False,

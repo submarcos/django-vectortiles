@@ -4,10 +4,24 @@ from vectortiles import settings as app_settings
 
 
 class BaseVectorView:
+    layer_classes = None
     layers = None
 
+    def get_layer_classes(self):
+        return self.layer_classes or []
+
+    def get_layer_class_kwargs(self):
+        return {}
+
     def get_layers(self):
-        return self.layers or []
+        return (
+            self.layers
+            if self.layers
+            else [
+                layer_class(**self.get_layer_class_kwargs())
+                for layer_class in self.get_layer_classes()
+            ]
+        )
 
 
 class BaseTileJSONView(BaseVectorView):

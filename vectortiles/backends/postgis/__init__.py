@@ -55,4 +55,4 @@ class VectorLayer(BaseVectorLayerMixin):
             )
             row = cursor.fetchone()[0]
             # psycopg2 returns memoryview, psycopg returns bytes
-            return row.tobytes() if type(row) == memoryview else row or b""
+            return row.tobytes() if isinstance(row, memoryview) else row or b""

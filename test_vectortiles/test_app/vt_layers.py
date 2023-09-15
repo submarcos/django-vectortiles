@@ -13,22 +13,20 @@ from vectortiles import VectorLayer
 
 class FeatureVectorLayer(VectorLayer):
     model = Feature
-    vector_tile_layer_name = "features"
-    vector_tile_fields = ("name",)
-    vector_tile_queryset_limit = 100
+    id = "features"
+    tile_fields = ("name",)
+    queryset_limit = 100
 
 
 class FeatureLayerVectorLayer(VectorLayer):
     model = Layer
-    vector_tile_fields = ("name",)
+    tile_fields = ("name",)
 
     def __init__(self, instance):
         self.instance = instance
 
     def get_tile(self, x, y, z):
-        cache_key = md5(
-            f"{self.get_vector_tile_layer_id()}-{z}-{x}-{y}".encode()
-        ).hexdigest()
+        cache_key = md5(f"{self.get_id()}-{z}-{x}-{y}".encode()).hexdigest()
         if cache.has_key(cache_key):  # NOQA W601
             return cache.get(cache_key)
 
@@ -40,7 +38,7 @@ class FeatureLayerVectorLayer(VectorLayer):
     def get_id(self):
         return slugify(self.instance.name)
 
-    def get_vector_tile_queryset(self, z, x, y):
+    def get_queryset(self, z, x, y):
         return self.instance.features.all()
 
     def get_max_zoom(self):
@@ -54,10 +52,10 @@ class FeatureLayerVectorLayer(VectorLayer):
 
 
 class FeatureLayerFilteredByDateVectorLayer(VectorLayer):
-    name = "features"
+    id = "features"
     tile_fields = ("name",)
 
-    def get_vector_tile_queryset(self, *args, **kwargs):
+    def get_queryset(self, *args, **kwargs):
         return Feature.objects.filter(date="2020-07-07")
 
 
@@ -111,7 +109,7 @@ class FullDataFeatureVectorLayer(VectorLayer):
     def get_id(self):
         return slugify(self.instance.name)
 
-    def get_vector_tile_queryset(self, z, x, y):
+    def get_queryset(self, z, x, y):
         qs = self.instance.features.all()
         if self.instance.name == "troncon_de_route":
             if z in range(self.get_min_zoom(), 9):
@@ -242,7 +240,7 @@ class CityCentroidVectorLayer(FullDataFeatureVectorLayer):
     def get_id(self):
         return "commune_centre"
 
-    def get_vector_tile_queryset(self, *args, **kwargs):
-        qs = super().get_vector_tile_queryset(*args, **kwargs)
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
         qs = qs.annotate(centroid=Centroid("geom"))
         return qs
