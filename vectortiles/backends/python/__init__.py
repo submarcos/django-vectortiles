@@ -32,12 +32,14 @@ class VectorLayer(BaseVectorLayerMixin):
         if limit:
             features = features[:limit]
         features = features.annotate(
-            clipped=Intersection(
-                Transform(self.geom_field, 3857),
-                bbox.buffer(self.pixel_length(z, self.tile_buffer)),
+            clipped=(
+                Intersection(
+                    Transform(self.geom_field, 3857),
+                    bbox.buffer(self.pixel_length(z, self.tile_buffer)),
+                )
+                if self.clip_geom
+                else F("geom")
             )
-            if self.clip_geom
-            else F("geom")
         )
         if features:
             tile = {
