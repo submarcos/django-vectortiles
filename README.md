@@ -113,7 +113,7 @@ urlpatterns = [
     path("feature/tiles.json", views.FeatureTileJSONView.as_view(), name="feature-tilejson"),
     ...
 ]
-
+]
 # in your settings file
 ALLOWED_HOSTS = [
     "a.tiles.xxxx",
