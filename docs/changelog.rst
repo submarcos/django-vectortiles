@@ -7,10 +7,10 @@ CHANGELOG
 * Drop python 3.6 and Django 2.2
 * Add python 3.11 and Django 4.2
 
-** Breaking changes **
+**Breaking changes**
 
   * Refactor PostGIS and Python (old named MapBox) backends usage. Use setting to set (default postgis)
-  * No DetailView anymore. As Tile can have many layers, declare VectorLayer on MTVView (one or many).
+  * No DetailView anymore. As Tile can have many layers, declare VectorLayer on MVTView (one or many).
 
 * Enhancements
 
