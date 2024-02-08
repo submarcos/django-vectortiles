@@ -69,12 +69,12 @@ Related model view
 
     class LayerTileView(MVTView, DetailView):
         model = Layer
-        vector_tile_fields = ('name', )
+        tile_fields = ('name', )
 
-        def get_vector_tile_layer_name(self):
+        def get_id(self):
             return self.get_object().name
 
-        def get_vector_tile_queryset(self):
+        def get_queryset(self):
             return self.get_object().features.all()
 
         def get(self, request, *args, **kwargs):
@@ -102,7 +102,7 @@ Django Rest Framework
     from vectortiles.rest_framework.renderers import MVTRenderer
 
 
-    class FeatureAPIView(PostgisBaseVectorTile, APIView):
+    class FeatureAPIView(BaseVectorTile, APIView):
         vector_tile_queryset = Feature.objects.all()
         vector_tile_layer_name = "features"
         vector_tile_fields = ('name', )
@@ -122,7 +122,7 @@ Django Rest Framework
 
     # or extending viewset
 
-    class FeatureViewSet(PostgisBaseVectorTile, viewsets.ModelViewSet):
+    class FeatureViewSet(BaseVectorTile, viewsets.ModelViewSet):
         queryset = Feature.objects.all()
         vector_tile_layer_name = "features"
         vector_tile_fields = ('name', )

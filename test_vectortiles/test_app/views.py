@@ -1,117 +1,102 @@
+from hashlib import md5
+
+from django.core.cache import cache
 from django.urls import reverse
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import TemplateView
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from test_vectortiles.test_app.models import Feature, Layer
-from vectortiles.mapbox.views import MVTView as MapboxMVTView
-from vectortiles.mixins import BaseVectorTileView, VectorLayer
-from vectortiles.postgis.mixins import PostgisBaseVectorTile
-from vectortiles.postgis.views import MVTView as PostgisMVTView
+from test_vectortiles.test_app.models import Feature, FullDataLayer
+from test_vectortiles.test_app.vt_layers import (
+    CityCentroidVectorLayer,
+    FeatureLayerFilteredByDateVectorLayer,
+    FeatureVectorLayer,
+    FullDataFeatureVectorLayer,
+)
+from vectortiles.mixins import BaseVectorTileView
 from vectortiles.rest_framework.renderers import MVTRenderer
+from vectortiles.rest_framework.views import MVTAPIView
 
 # test at feature level and at layer level
-from vectortiles.views import TileJSONView
+from vectortiles.views import MVTView, TileJSONView
 
 
-class MapboxFeatureView(MapboxMVTView, ListView):
-    model = Feature
-    vector_tile_layer_name = "features"
-    vector_tile_fields = ("name",)
-    vector_tile_queryset_limit = 100
+class FeatureVectorLayers:
+    layer_classes = [FeatureVectorLayer]
 
 
-class MapboxLayerView(MapboxMVTView, DetailView):
-    model = Layer
-    vector_tile_fields = ("name",)
+class FeatureView(FeatureVectorLayers, MVTView):
+    """Simple model View"""
 
-    def get_vector_tile_layer_name(self):
-        return self.get_object().name
 
-    def get_vector_tile_queryset(self):
-        return self.get_object().features.all()
+class FeatureTileJSONView(FeatureVectorLayers, TileJSONView):
+    """Simple model TileJSON View"""
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return BaseVectorTileView.get(
-            self,
-            request=request,
-            z=kwargs.get("z"),
-            x=kwargs.get("x"),
-            y=kwargs.get("y"),
+    name = "My feature dataset"
+    attribution = "@IGN - BD Topo 12/2022"
+    description = "My dataset"
+
+
+class MultipleVectorLayers:
+    def get_layers(self):
+        return [
+            FullDataFeatureVectorLayer(layer)
+            for layer in FullDataLayer.objects.filter(include_in_tilejson=True)
+        ] + [CityCentroidVectorLayer()]
+
+
+class LayerView(MultipleVectorLayers, MVTView):
+    """Multiple tiles in same time, each Layer instance is a tile layer"""
+
+    def get_layers_last_update(self):
+        last_updated_layer = (
+            FullDataLayer.objects.all()
+            .order_by("-update_datetime")
+            .only("update_datetime")
+            .first()
         )
+        return last_updated_layer.update_datetime if last_updated_layer else None
+
+    def get_content_status(self, z, x, y):
+        cache_key = md5(
+            f"tilejson-{self.get_layers_last_update()}-{z}-{x}-{y}".encode()
+        ).hexdigest()
+        if cache.has_key(cache_key):  # NOQA W601
+            tile, status = cache.get(cache_key), 200
+
+        else:
+            tile, status = super().get_content_status(z, x, y)
+            cache.set(cache_key, tile, timeout=3600 * 24 * 30)
+        return tile, status
 
 
-class PostGISFeatureView(PostgisMVTView, ListView):
-    model = Feature
-    vector_tile_layer_name = "features"
-    vector_tile_fields = ("name",)
-    vector_tile_queryset_limit = 100
+class LayerTileJSONView(MultipleVectorLayers, TileJSONView):
+    """Simple model TileJSON View"""
+
+    name = "My layers dataset"
+    attribution = "@IGN - BD Topo 12/2022"
+    legend = "https://avatars.githubusercontent.com/u/7448208?s=96&v=4"
+    description = "My dataset"
+    center = [1.77, 44.498, 8]
+    min_zoom = 6
+    max_zoom = 18
+
+    def get_tile_url(self):
+        return reverse("layer-pattern")
 
 
-class PostGISFeatureViewWithManualVectorTileQuerySet(PostgisMVTView, DetailView):
-    vector_tile_layer_name = "features"
-    vector_tile_fields = ("name",)
-
-    def get(self, request, *args, **kwargs):
-        self.vector_tile_queryset = Feature.objects.all()
-
-        return BaseVectorTileView.get(
-            self,
-            request=request,
-            z=kwargs.get("z"),
-            x=kwargs.get("x"),
-            y=kwargs.get("y"),
-        )
+class FeatureWithDateView(MVTView):
+    layer_classes = [FeatureLayerFilteredByDateVectorLayer]
 
 
-class PostGISFeatureWithDateView(PostgisMVTView, ListView):
-    queryset = Feature.objects.filter(date="2020-07-07")
-    vector_tile_layer_name = "features"
-    vector_tile_fields = ("name",)
+class FeatureAPIView(FeatureVectorLayers, MVTAPIView):
+    pass
 
 
-class PostGISLayerView(PostgisMVTView, DetailView):
-    model = Layer
-    vector_tile_fields = ("name",)
-
-    def get_vector_tile_layer_name(self):
-        return self.get_object().name
-
-    def get_vector_tile_queryset(self):
-        return self.get_object().features.all()
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return BaseVectorTileView.get(
-            self,
-            request=request,
-            z=kwargs.get("z"),
-            x=kwargs.get("x"),
-            y=kwargs.get("y"),
-        )
-
-
-class PostGISDRFFeatureView(PostgisBaseVectorTile, APIView):
-    vector_tile_queryset = Feature.objects.all()
-    vector_tile_layer_name = "features"
-    vector_tile_fields = ("name",)
-    vector_tile_queryset_limit = 100
-    renderer_classes = (MVTRenderer,)
-
-    def get(self, request, *args, **kwargs):
-        return Response(
-            self.get_tile(kwargs.get("x"), kwargs.get("y"), kwargs.get("z"))
-        )
-
-
-class PostGISDRFFeatureViewSet(PostgisBaseVectorTile, viewsets.ModelViewSet):
+class FeatureViewSet(BaseVectorTileView, viewsets.ModelViewSet):
     queryset = Feature.objects.all()
-    vector_tile_layer_name = "features"
-    vector_tile_fields = ("name",)
-    vector_tile_queryset_limit = 100
+    layer_classes = [FeatureVectorLayers]
 
     @action(
         detail=False,
@@ -120,72 +105,19 @@ class PostGISDRFFeatureViewSet(PostgisBaseVectorTile, viewsets.ModelViewSet):
         url_path=r"tiles/(?P<z>\d+)/(?P<x>\d+)/(?P<y>\d+)",
         url_name="tile",
     )
-    def tile(self, request, *args, **kwargs):
-        return Response(
-            self.get_tile(
-                x=int(kwargs.get("x")), y=int(kwargs.get("y")), z=int(kwargs.get("z"))
-            )
-        )
+    def tile(self, request, z, x, y, *args, **kwargs):
+        z, x, y = int(z), int(x), int(y)
+        content, status = self.get_content_status(z, x, y)
+        return Response(content, status=status)
 
 
-class MapboxTileJSONFeatureView(TileJSONView):
-    vector_tile_tilejson_name = "Feature tileset"
-    vector_tile_tilejson_description = "generated from mapbox library"
-    vector_tile_tilejson_attribution = "© JEC"
+class TileJSONFeatureView(TileJSONView):
+    name = "Feature tileset"
+    description = "feature tileset"
+    attribution = "© JEC"
 
     def get_tile_url(self):
-        return reverse("feature-mapbox-pattern")
-
-    def get_vector_layers(self):
-        return [VectorLayer("features", description="Feature layer").get_vector_layer()]
-
-
-class MapboxTileJSONLayerView(TileJSONView, DetailView):
-    vector_tile_tilejson_name = "Layer's features tileset"
-    vector_tile_tilejson_description = "generated from mapbox library"
-    vector_tile_tilejson_attribution = "© JEC"
-    model = Layer
-
-    def get_tile_url(self):
-        return reverse("layer-mapbox-pattern", args=(self.kwargs.get("pk"),))
-
-    def get_vector_layers(self):
-        return [
-            VectorLayer(
-                self.get_object().name,
-                description="Feature layer",
-            ).get_vector_layer()
-        ]
-
-
-class PostGISTileJSONFeatureView(TileJSONView):
-    vector_tile_tilejson_name = "Feature tileset"
-    vector_tile_tilejson_description = "generated from postgis database"
-    vector_tile_tilejson_attribution = "© JEC"
-
-    def get_tile_url(self):
-        return reverse("feature-postgis-pattern")
-
-    def get_vector_layers(self):
-        return [VectorLayer("features", description="Feature layer").get_vector_layer()]
-
-
-class PostGISTileJSONLayerView(TileJSONView, DetailView):
-    model = Layer
-    vector_tile_tilejson_name = "Layer's features tileset"
-    vector_tile_tilejson_description = "generated from postgis database"
-    vector_tile_tilejson_attribution = "© JEC"
-
-    def get_tile_url(self):
-        return reverse("layer-postgis-pattern", args=(self.kwargs.get("pk"),))
-
-    def get_vector_layers(self):
-        return [
-            VectorLayer(
-                self.get_object().name,
-                description="Feature layer",
-            ).get_vector_layer()
-        ]
+        return reverse("feature-pattern")
 
 
 class IndexView(TemplateView):

@@ -17,19 +17,19 @@
 pip install django-vectortiles
 ```
 
-* Without any other option, use only vectortiles.postgis
+* By default, postgis backend is enabled.
 * Ensure you have psycopg2 set and installed
 
-#### If you don't want to use Postgis
+#### If you don't want to use Postgis and / or PostgreSQL
 ```bash
-pip install django-vectortiles[mapbox]
+pip install django-vectortiles[python]
 ```
 * This will incude mapbox_vector_tiles package and its dependencies
-* Use only vectortiles.mapbox
+* Set VECTOR_TILES_BACKEND to "vectortiles.backends.python"
 
 ### Examples
 
-* assuming you have django.contrib.gis in your INSTALLED_APPS and a gis compatible database backend
+* assuming you have ```django.contrib.gis``` in your ```INSTALLED_APPS``` and a gis compatible database backend
 
 ```python
 # in your app models.py
@@ -37,37 +37,40 @@ pip install django-vectortiles[mapbox]
 from django.contrib.gis.db import models
 
 
-class Layer(models.Model):
-    name = models.CharField(max_length=250)
-
-
 class Feature(models.Model):
     geom = models.GeometryField(srid=4326)
     name = models.CharField(max_length=250)
-    layer = models.ForeignKey(Layer, on_delete=models.CASCADE, related_name='features')
 ```
 
 
-#### Simple model:
+#### Simple Example:
 
 ```python
-# in your view file
-
-from django.views.generic import ListView
-from vectortiles.postgis.views import MVTView
 from yourapp.models import Feature
 
+# in a vector_layers.py file
+from vectortiles import VectorLayer
 
-class FeatureTileView(MVTView, ListView):
+
+class FeatureVectorLayer(VectorLayer):
     model = Feature
     vector_tile_layer_name = "features"
-    vector_tile_fields = ('other_field_to_include', )
+    vector_tile_fields = ("name",)
+
+# in your view file
+
+from yourapp.vector_layers import FeatureVectorLayer
+
+from vectortiles.views import MVTView
+
+
+class FeatureTileView(MVTView):
+    layer_classes = [FeatureVectorLayer]
 
 
 # in your urls file
 from django.urls import path
 from yourapp import views
-
 
 urlpatterns = [
     ...
@@ -76,42 +79,55 @@ urlpatterns = [
 ]
 ```
 
-#### Related model:
+#### Use TileJSON and multiple domains:
 
 ```python
 # in your view file
 
-from django.views.generic import DetailView
-from vectortiles.mixins import BaseVectorTileView
-from vectortiles.postgis.views import MVTView
-from yourapp.models import Layer
+from django.urls import reverse
+
+from vectortiles.views import TileJSONView
+from yourapp.vector_layers import FeatureVectorLayer
 
 
-class LayerTileView(MVTView, DetailView):
-    model = Layer
-    vector_tile_fields = ('other_field_to_include', )
+class FeatureTileJSONView(TileJSONView):
+    """Simple model TileJSON View"""
 
-    def get_vector_tile_layer_name(self):
-        return self.get_object().name
+    name = "My features dataset"
+    attribution = "@JEC Data"
+    description = "My dataset"
+    layer_classes = [FeatureVectorLayer]
 
-    def get_vector_tile_queryset(self):
-        return self.get_object().features.all()
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return BaseVectorTileView.get(self,request=request, z=kwargs.get('z'), x=kwargs.get('x'), y=kwargs.get('y'))
+    def get_tile_url(self):
+        """ Base MVTView Url used to generates urls in TileJSON in a.tiles.xxxx/{z}/{x}/{y} format """
+        return str(reverse("feature-tile", args=(0, 0, 0))).replace("0/0/0", "{z}/{x}/{y}")
 
 
 # in your urls file
 from django.urls import path
 from yourapp import views
 
-
 urlpatterns = [
     ...
-    path('layer/<int:pk>/tile/<int:z>/<int:x>/<int:y>', views.LayerTileView.as_view(), name="layer-tile"),
+    path('tiles/<int:z>/<int:x>/<int:y>', views.FeatureTileView.as_view(), name="feature-tile"),
+    path("feature/tiles.json", views.FeatureTileJSONView.as_view(), name="feature-tilejson"),
     ...
 ]
+]
+# in your settings file
+ALLOWED_HOSTS = [
+    "a.tiles.xxxx",
+    "b.tiles.xxxx",
+    "c.tiles.xxxx",
+    ...
+]
+
+VECTOR_TILES_URLS = [
+    "https://a.tiles.xxxx",
+    "https://b.tiles.xxxx",
+    "https://c.tiles.xxxx",
+]
+
 ```
 
 #### Usage without PostgreSQL / PostGIS
@@ -126,8 +142,9 @@ django-vectortiles can be used with DRF if `renderer_classes` of the view is ove
 
 ##### With docker and docker-compose
 
+Copy ```.env.dist``` to ```.env``` and fill ```SECRET_KEY``` and ```POSTGRES_PASSWORD```
+
 ```bash
-docker pull makinacorpus/geodjango:bionic-3.6
 docker-compose build
 # docker-compose up
 docker-compose run /code/venv/bin/python ./manage.py test
@@ -139,6 +156,7 @@ docker-compose run /code/venv/bin/python ./manage.py test
 * Install geodjango requirements
 * Have a postgresql / postgis 2.4+ enabled database
 * Use a virtualenv
+
 ```bash
 pip install .[dev] -U
 ```

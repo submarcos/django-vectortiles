@@ -11,24 +11,23 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from pathlib import Path
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_DIR = BASE_DIR.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "+10auwvyy9--087ljr2o_-z^mg^@rx)*pe9--eikkn356awcna"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [
-    "*",
-]
-
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Application definition
 
@@ -40,7 +39,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.gis",
     "django.contrib.staticfiles",
-    #'debug_toolbar',
     "vectortiles",
     "test_vectortiles.test_app",
 ]
@@ -53,7 +51,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = "test_vectortiles.urls"
@@ -83,10 +80,10 @@ WSGI_APPLICATION = "test_vectortiles.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "USER": "travis_ci_test",
-        "NAME": "travis_ci_test",
-        "PASSWORD": "travis_ci_test",
-        "HOST": os.getenv("POSTGRES_HOST", "127.0.0.1"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "NAME": os.getenv("POSTGRES_NAME"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
     }
 }
 
@@ -120,3 +117,13 @@ DEBUG_TOOLBAR_CONFIG = {
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = "/static/"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": PROJECT_DIR / "cache",
+        "TIMEOUT": 60 * 60 * 24 * 60,  # nearly 2 months
+    }
+}
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
