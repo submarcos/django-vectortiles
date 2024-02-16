@@ -1,7 +1,6 @@
 from urllib.parse import unquote, urljoin
 
 from django.urls import path
-from django.views.defaults import page_not_found
 
 from vectortiles import settings as app_settings
 
@@ -175,5 +174,9 @@ class BaseVectorTileView(BaseVectorView):
         return f"{pattern.replace('{z}', '<int:z>').replace('{x}', '<int:x>').replace('{y}', '<int:y>')}"
 
     def get_url(self, prefix=None, url_name=None):
-        """ Generate URL to serve vector tiles with required parameters"""
-        return path(f"{prefix or self.prefix_tiles_url}/{self.get_default_url_matrix()}", self.as_view(), name=url_name,)
+        """Generate URL to serve vector tiles with required parameters"""
+        return path(
+            f"{prefix or self.prefix_tiles_url}/{self.get_default_url_matrix()}",
+            self.as_view(),
+            name=url_name,
+        )
