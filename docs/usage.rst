@@ -10,6 +10,7 @@ Then, you need to describe how your data will be embed in tiles.
 Start by creating vector layers for your data...
 
 .. code-block:: python
+
     # in your app models.py
     from django.contrib.gis.db import models
 
@@ -277,5 +278,163 @@ then use http://your-domain/features/tiles/{z}/{x}/{y}.pbf
 MapLibre Example
 ****************
 
-.. literalinclude:: ../test_vectortiles/test_app/templates/index.html
-   :language: html
+.. code-block::  html
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>MapBox / MapLibre example</title>
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+        <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet'/>
+    </head>
+    <body>
+    <div id="map" style="width: 100%; height: 100vh"></div>
+    <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
+
+    <script>
+        var map = new maplibregl.Map({
+            container: 'map',
+            hash: true,
+            style: 'https://demotiles.maplibre.org/style.json', // stylesheet location
+            center: [1.77, 44.498], // starting position [lng, lat]
+            zoom: 8 // starting zoom
+        });
+        var nav = new maplibregl.NavigationControl({visualizePitch: true});
+        map.addControl(nav, 'top-right');
+        var scale = new maplibregl.ScaleControl({
+            maxWidth: 80,
+            unit: 'metric'
+        });
+        map.addControl(scale);
+        map.on('load', function () {
+            map.addSource('layers', {
+                'type': 'vector',
+                'url': '{% url "city-tilejson" %}'
+            });
+            map.addLayer(
+                {
+                    'id': 'background2',
+                    'type': 'background',
+                    'paint': {
+                        'background-color': '#F8F4F0',
+                    }
+
+                }
+            );
+            map.addLayer(
+                {
+                    'id': 'cities',
+                    'type': 'line',
+                    'filter': ['==', ['geometry-type'], 'Polygon'],
+                    'source': 'layers',
+                    'source-layer': 'cities',
+                    'layout': {
+                        'line-cap': 'round',
+                        'line-join': 'round'
+                    },
+                    'paint': {
+                        'line-opacity': 0.4,
+                        'line-color': '#3636a8',
+                        'line-width': 0.5,
+                        'line-dasharray': [10, 10]
+                    }
+
+                }
+            );
+
+            map.addLayer(
+                {
+                    "id": "city-borders",
+                    "type": "symbol",
+                    "source": "layers",
+                    "source-layer": "cities",
+                    "minzoom": 13,
+                    "layout": {
+                        "symbol-placement": "line",
+                        "symbol-spacing": 350,
+                        "text-field": "{nom}",
+                        "text-font": ["Noto Sans Italic"],
+                        "text-letter-spacing": 0.2,
+                        "text-max-width": 5,
+                        "text-rotation-alignment": "map",
+                        "text-size": 10
+                    },
+                    "paint": {
+                        "text-color": "#3636a8",
+                        "text-halo-color": "rgba(255,255,255,0.7)",
+                        "text-halo-width": 1
+                    }
+                }
+            );
+            map.addLayer(
+                {
+                    "id": "cities_marker",
+                    "type": "symbol",
+                    "source": "layers",
+                    "source-layer": "city-centroids",
+                    "minzoom": 10,
+                    "maxzoom": 12,
+                    "layout": {
+                        "symbol-placement": "point",
+                        "symbol-spacing": 350,
+                        "text-field": "{nom}",
+                        "text-font": ["Noto Sans Italic"],
+                        "text-letter-spacing": 0.2,
+                        "text-max-width": 5,
+                        "text-rotation-alignment": "map",
+                        "text-size": 14
+                    },
+                    "paint": {
+                        "text-color": "#3636a8",
+                        "text-halo-color": "rgba(255,255,255,0.7)",
+                        "text-halo-width": 1.5
+                    }
+                }
+            );
+
+            // Create a popup, but don't add it to the map yet.
+            var popup = new maplibregl.Popup({
+                closeButton: false,
+                closeOnClick: false
+            });
+
+            map.on('mouseenter', 'cities_marker', function (e) {
+                // Change the cursor style as a UI indicator.
+                map.getCanvas().style.cursor = 'pointer';
+                var coordinates = e.features[0].geometry.coordinates.slice();
+                var description = `${e.features[0].properties.name} (${e.features[0].properties.population} hab.)`;
+
+                // Ensure that if the map is zoomed out such that multiple
+                // copies of the feature are visible, the popup appears
+                // over the copy being pointed to.
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+
+                // Populate the popup and set its coordinates
+                // based on the feature found.
+                popup.setLngLat(coordinates).setHTML(description).addTo(map);
+            });
+
+            map.on('mouseleave', 'cities_marker', function () {
+                map.getCanvas().style.cursor = '';
+                popup.remove();
+            });
+        }
+    );
+    </script>
+    </body>
+    </html>
+
+
+Cache policy
+************
