@@ -10,6 +10,7 @@ Welcome to django-vectortiles's documentation!
 
    installation.rst
    usage.rst
+   development.rst
    changelog.rst
 
 
@@ -18,5 +19,4 @@ Indices and tables
 
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`

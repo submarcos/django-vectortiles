@@ -1,4 +1,4 @@
-DEVELOPMENT
+Development
 ===========
 
 With docker and docker-compose

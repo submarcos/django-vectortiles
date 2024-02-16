@@ -1,4 +1,4 @@
-USAGE
+Usage
 =====
 
 A vector tile is composed by vector layers which represent different kind of data. Each layer is composed by features.
