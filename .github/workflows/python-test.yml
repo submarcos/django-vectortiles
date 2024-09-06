@@ -25,6 +25,13 @@ jobs:
         django-version: ['4.2.*', '5.1.*']
         psycopg: ['psycopg2-binary']
         postgis-image: ['postgis/postgis:12-2.5', 'postgis/postgis:latest']
+        exclude:
+          - python-version: '3.8'
+            django-version: '5.1.*'
+            postgis-image: 'postgis/postgis:12-2.5'
+          - python-version: '3.8'
+            django-version: '5.1.*'
+            postgis-image: 'postgis/postgis:latest'
         include:
           - postgis-image: 'postgis/postgis:latest'
             django-version: '4.2.*'
