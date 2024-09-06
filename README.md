@@ -105,7 +105,7 @@ class CityVectorLayer(VectorLayer):
 class CityCentroidVectorLayer(VectorLayer):
     queryset = City.objects.annotate(
         centroid=Centroid("geom"), # compute the city centroïd
-        area=Area("geom"), # compute the city centroïd
+        area=Area("geom"), # compute the city area
     )  
     geom_field = "centroid"  # use the centroid field as geometry feature
     id = "city_centroïds"
