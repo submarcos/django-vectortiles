@@ -6,41 +6,497 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>MapBox / MapLibre example</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
     <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet'/>
+
 </head>
 <body>
 <div id="map" style="width: 100%; height: 100vh"></div>
 <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
+
 <script>
     var map = new maplibregl.Map({
         container: 'map',
+        hash: true,
         style: 'https://demotiles.maplibre.org/style.json', // stylesheet location
-        center: [-74.5, 40], // starting position [lng, lat]
-        zoom: 9 // starting zoom
+        center: [1.77, 44.498], // starting position [lng, lat]
+        zoom: 8 // starting zoom
     });
+    var nav = new maplibregl.NavigationControl({visualizePitch: true});
+    map.addControl(nav, 'top-right');
+    var scale = new maplibregl.ScaleControl({
+        maxWidth: 80,
+        unit: 'metric'
+    });
+    map.addControl(scale);
     map.on('load', function () {
-        map.addSource('features', {
+        map.addSource('layers', {
             'type': 'vector',
-            'tiles': [
-                'http://localhost:8000/features/postgis/drf/listview/tile/{z}/{x}/{y}'
-            ],
-            'minzoom': 0,
-            'maxzoom': 22
+            'url': '{% url "layer-tilejson" %}'
         });
         map.addLayer(
             {
-                'id': 'features-polygon',
-                'type': 'fill',
-                'source': 'features',
-                'source-layer': 'features',
+                'id': 'background2',
+                'type': 'background',
                 'paint': {
-                    'fill-color': 'rgb(53, 175, 109)',
-                    'fill-opacity': 0.6
+                    'background-color': '#F8F4F0',
                 }
 
-            },
+            }
         );
-    });
+
+        map.addLayer(
+            {
+                'id': 'foret_publique',
+                'type': 'fill',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'foret_publique',
+                'paint': {
+                    'fill-color': '#64b646',
+                    'fill-opacity': 0.1
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'parc_ou_reserve',
+                'type': 'fill',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'parc_ou_reserve',
+                'paint': {
+                    'fill-color': '#64b646',
+                    'fill-opacity': 0.1
+                }
+
+            }
+        );
+
+        map.addLayer(
+            {
+                'id': 'troncon_hydrographique',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_hydrographique',
+                'paint': {
+                    'line-color': '#A7D4E8',
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'surface_hydrographique',
+                'type': 'fill',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'surface_hydrographique',
+                'paint': {
+                    'fill-color': '#A7D4E8',
+                    'fill-opacity': 1
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'troncon_de_voie_ferree',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_voie_ferree',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["!=", "nature", "Voie de service"],
+                ],
+                "paint": {
+                    "line-color": "#bbb",
+                    "line-width": {"base": 1.4, "stops": [[14, 0.4], [15, 0.75], [20, 2]]}
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'troncon_de_voie_ferree_hatching',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_voie_ferree',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["!=", "nature", "Voie de service"],
+                ],
+                "paint": {
+                    "line-color": "#bbb",
+                    "line-dasharray": [0.2, 8],
+                    "line-width": {"base": 1.4, "stops": [[14.5, 0], [15, 3], [20, 8]]}
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'troncon_de_voie_ferree_service',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_voie_ferree',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["==", "nature", "Voie de service"],
+                ],
+                "paint": {
+                    "line-color": "hsla(0, 0%, 73%, 0.77)",
+                    "line-width": {"base": 1.4, "stops": [[14, 0.4], [20, 1]]}
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'troncon_de_voie_ferree__service_hatching',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_voie_ferree',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["==", "nature", "Voie de service"],
+                ],
+                "paint": {
+                    "line-color": "hsla(0, 0%, 73%, 0.68)",
+                    "line-dasharray": [0.2, 8],
+                    "line-width": {"base": 1.4, "stops": [[14.5, 0], [15, 2], [20, 6]]}
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'troncon_de_route',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_route',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["!=", "nature", "Type autoroutier"],
+                    ["!=", "nature", "Bretelle"],
+                ],
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-opacity': 1,
+                    'line-color': ['match', ['get', 'nature'], // get the property
+                        'Type autoroutier', '#FF0000',              // if 'GP' then yellow
+                        'XX', 'black',               // if 'XX' then black
+                        'white'],
+                    'line-width': {"base": 1.2, "stops": [[13.5, 0], [14, 2.5], [20, 11.5]]}
+                }
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'autoroute',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_route',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["==", "nature", "Type autoroutier"],
+                ],
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-opacity': 1,
+                    'line-color': '#fc8',
+                    'line-width': {"base": 1.2, "stops": [[6.5, 0], [7, 0.5], [20, 18]]}
+                }
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'autoroute_bretelles',
+                'type': 'line',
+                'source': 'layers',
+                'source-layer': 'troncon_de_route',
+                "filter": [
+                    "all",
+                    ["==", "$type", "LineString"],
+                    ["==", "nature", "Bretelle"],
+                ],
+                "layout": {"line-cap": "round", "line-join": "round"},
+                "paint": {
+                    "line-color": "#fc8",
+                    "line-width": {
+                        "base": 1.2,
+                        "stops": [[12.5, 0], [13, 1.5], [14, 2.5], [20, 11.5]]
+                    }
+                }
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'terrain_de_sport',
+                'type': 'fill',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'terrain_de_sport',
+                'paint': {
+                    'fill-color': '#E0EDD8',
+                    'fill-opacity': 1
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'batiment',
+                'type': 'fill',
+                maxzoom: 16,
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'batiment',
+                'paint': {
+                    'fill-color': '#F1EAD8',
+                    'fill-opacity': 0.8
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'batiment-contours',
+                'type': 'line',
+                minzoom: 14,
+                maxzoom: 16,
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'batiment',
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-opacity': 0.8,
+                    'line-color': '#D6C3AC',
+                    'line-width': 2,
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'batiment-3D',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                minzoom: 16,
+                'source': 'layers',
+                'source-layer': 'batiment',
+                'type': 'fill-extrusion',
+                'paint': {
+                    'fill-extrusion-color': '#F1EAD8',
+
+                    // Use an 'interpolate' expression to
+                    // add a smooth transition effect to
+                    // the buildings as the user zooms in.
+                    'fill-extrusion-height': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        15,
+                        0,
+                        15.05,
+                        ['get', 'hauteur']
+                    ],
+                    'fill-extrusion-base': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        15,
+                        0,
+                        15.05,
+                        2.5
+                    ],
+                    'fill-extrusion-opacity': 0.6
+                }
+
+            }
+        );
+                map.addLayer(
+            {
+                'id': 'commune',
+                'type': 'line',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'commune',
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-opacity': 0.4,
+                    'line-color': '#3636a8',
+                    'line-width': 0.5,
+                    'line-dasharray': [10, 10]
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'departement',
+                'type': 'line',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'departement',
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-opacity': 0.8,
+                    'line-color': '#479c47',
+                    'line-width': 0.8
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                'id': 'region',
+                'type': 'line',
+                'filter': ['==', ['geometry-type'], 'Polygon'],
+                'source': 'layers',
+                'source-layer': 'region',
+                'layout': {
+                    'line-cap': 'round',
+                    'line-join': 'round'
+                },
+                'paint': {
+                    'line-opacity': 0.9,
+                    'line-color': '#b12929',
+                    'line-width': 1
+                }
+
+            }
+        );
+        map.addLayer(
+            {
+                "id": "commune_border",
+                "type": "symbol",
+                "source": "layers",
+                "source-layer": "commune",
+                "minzoom": 13,
+                "layout": {
+                    "symbol-placement": "line",
+                    "symbol-spacing": 350,
+                    "text-field": "{nom}",
+                    "text-font": ["Noto Sans Italic"],
+                    "text-letter-spacing": 0.2,
+                    "text-max-width": 5,
+                    "text-rotation-alignment": "map",
+                    "text-size": 10
+                },
+                "paint": {
+                    "text-color": "#3636a8",
+                    "text-halo-color": "rgba(255,255,255,0.7)",
+                    "text-halo-width": 1
+                }
+            }
+        );
+        map.addLayer(
+            {
+                "id": "commune_nom",
+                "type": "symbol",
+                "source": "layers",
+                "source-layer": "commune_centre",
+                "minzoom": 10,
+                "maxzoom": 12,
+                "layout": {
+                    "symbol-placement": "point",
+                    "symbol-spacing": 350,
+                    "text-field": "{nom}",
+                    "text-font": ["Noto Sans Italic"],
+                    "text-letter-spacing": 0.2,
+                    "text-max-width": 5,
+                    "text-rotation-alignment": "map",
+                    "text-size": 14
+                },
+                "paint": {
+                    "text-color": "#3636a8",
+                    "text-halo-color": "rgba(255,255,255,0.7)",
+                    "text-halo-width": 1.5
+                }
+            }
+        );
+                map.addLayer(
+            {
+                "id": "eau_nom",
+                "type": "symbol",
+                "source": "layers",
+                "source-layer": "troncon_hydrographique",
+                "minzoom": 13,
+                "layout": {
+                    "symbol-placement": "line",
+                    "symbol-spacing": 350,
+                    "text-field": "{nom}",
+                    "text-font": ["Noto Sans Italic"],
+                    "text-letter-spacing": 0.2,
+                    "text-max-width": 5,
+                    "text-rotation-alignment": "map",
+                    "text-size": 14
+                },
+                "paint": {
+                    "text-color": "#74aee9",
+                    "text-halo-color": "rgba(255,255,255,0.7)",
+                    "text-halo-width": 1.5
+                }
+            }
+        );
+        // Create a popup, but don't add it to the map yet.
+        var popup = new maplibregl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        map.on('mouseenter', 'commune_nom', function (e) {
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
+            console.log(e.features);
+            var coordinates = e.features[0].geometry.coordinates.slice();
+            var description = `${e.features[0].properties.nom} (${e.features[0].properties.population} hab.)`;
+
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            popup.setLngLat(coordinates).setHTML(description).addTo(map);
+        });
+
+        map.on('mouseleave', 'city-centroid', function () {
+            map.getCanvas().style.cursor = '';
+            popup.remove();
+        });
+    }
+);
 </script>
 </body>
 </html>

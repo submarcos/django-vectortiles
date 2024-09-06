@@ -1,13 +1,11 @@
 version: "3"
 services:
   postgres:
-    image: postgis/postgis:10-2.5
+    image: postgis/postgis:12-2.5
     volumes:
       - postgres:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=travis_ci_test
-      - POSTGRES_USER=travis_ci_test
-      - POSTGRES_DB=travis_ci_test
+    env_file:
+      - .env
     ports:
       - "5432:5432"
 
@@ -17,7 +15,9 @@ services:
     depends_on:
       - postgres
     environment:
-      - POSTGRES_HOST=postgres
+      - DJANGO_SETTINGS_MODULE=test_vectortiles.settings.dev
+    env_file:
+      - .env
     volumes:
       - .:/code/src
     ports:

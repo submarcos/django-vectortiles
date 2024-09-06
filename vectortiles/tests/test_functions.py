@@ -3,11 +3,11 @@ from django import VERSION
 from django.test import TestCase
 
 from test_vectortiles.test_app.models import Feature
-from vectortiles.postgis.functions import MakeEnvelope
+from vectortiles.backends.postgis.functions import MakeEnvelope
 
 
 class MakeEnvelopeTestCase(TestCase):
-    def test_implicitely_transform_to_base_srid(self):
+    def test_implicitly_transform_to_base_srid(self):
         DJANGO_MAJOR = VERSION[0]
         if DJANGO_MAJOR < 3 or DJANGO_MAJOR >= 4:
             # superfluous parenthesis for unknown reason

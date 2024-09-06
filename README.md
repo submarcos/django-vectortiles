@@ -1,8 +1,8 @@
 ![Tests](https://github.com/submarcos/django-vectortiles/workflows/Python%20/%20Django%20matrix%20test/badge.svg)
 [![Coverage](https://codecov.io/gh/submarcos/django-vectortiles/branch/master/graph/badge.svg)](https://codecov.io/gh/submarcos/django-vectortiles)
 
-![Python Version](https://img.shields.io/badge/python-%3E%3D%203.6-blue.svg)
-![Django Version](https://img.shields.io/badge/django-%3E%3D%202.2-blue.svg)
+![Python Version](https://img.shields.io/badge/python-%3E%3D%203.7-blue.svg)
+![Django Version](https://img.shields.io/badge/django-%3E%3D%203.2-blue.svg)
 
 # Generate MapBox VectorTiles from GeoDjango models
 
@@ -17,19 +17,21 @@
 pip install django-vectortiles
 ```
 
-* Without any other option, use only vectortiles.postgis
-* Ensure you have psycopg2 set and installed
+* By default, postgis backend is enabled.
+* Ensure you have psycopg installed
 
-#### If you don't want to use Postgis
+#### If you don't want to use Postgis and / or PostgreSQL
 ```bash
-pip install django-vectortiles[mapbox]
+pip install django-vectortiles[python]
 ```
-* This will incude mapbox_vector_tiles package and its dependencies
-* Use only vectortiles.mapbox
+* This will include mapbox_vector_tiles package and its dependencies
+* Set ```VECTOR_TILES_BACKEND="vectortiles.backends.python"``` in your project settings.
 
 ### Examples
 
-* assuming you have django.contrib.gis in your INSTALLED_APPS and a gis compatible database backend
+Let's create vector tiles with your city geometries.
+
+* assuming you have ```django.contrib.gis``` in your ```INSTALLED_APPS``` and a gis compatible database backend
 
 ```python
 # in your app models.py
@@ -37,110 +39,102 @@ pip install django-vectortiles[mapbox]
 from django.contrib.gis.db import models
 
 
-class Layer(models.Model):
+class City(models.Model):
     name = models.CharField(max_length=250)
-
-
-class Feature(models.Model):
-    geom = models.GeometryField(srid=4326)
-    name = models.CharField(max_length=250)
-    layer = models.ForeignKey(Layer, on_delete=models.CASCADE, related_name='features')
+    city_code = models.CharField(max_length=10, unique=True)
+    population = models.IntegerField(default=0)
+    geom = models.MultiPolygonField(srid=4326)
 ```
 
 
-#### Simple model:
+#### Simple Example:
 
 ```python
+from yourapp.models import City
+
+# in a vector_layers.py file
+from vectortiles import VectorLayer
+
+
+class CityVL(VectorLayer):
+    model = City
+    id = "cities"  # layer id / name in tile
+    tile_fields = ("name", "city_code")  # add name and city_code properties in each tile feature
+    min_zoom = 9  # don't embed city borders at low zoom levels
+
 # in your view file
 
-from django.views.generic import ListView
-from vectortiles.postgis.views import MVTView
-from yourapp.models import Feature
+from yourapp.vector_layers import CityVL
+
+from vectortiles.views import MVTView
 
 
-class FeatureTileView(MVTView, ListView):
-    model = Feature
-    vector_tile_layer_name = "features"
-    vector_tile_fields = ('other_field_to_include', )
+class CityTileView(MVTView):
+    layer_classes = [CityVL]
 
 
 # in your urls file
 from django.urls import path
 from yourapp import views
 
-
 urlpatterns = [
     ...
-    path('tiles/<int:z>/<int:x>/<int:y>', views.FeatureTileView.as_view(), name="feature-tile"),
+    CityTileView.get_url(),  # serve tiles at default /tiles/<int:z>/<int:x>/<int:y>. You can override url prefix and tile scheme in class attributes.
     ...
 ]
 ```
+#### Example with multiple layers
 
-#### Related model:
+Suppose you want to make a map with your city borders, and a point in each city center that shows a popup with city name, population an area.
 
 ```python
+from django.contrib.gis.db.models.functions import Centroid, Area
+from yourapp.models import City
+
+# in a vector_layers.py file
+from vectortiles import VectorLayer
+
+
+class CityVectorLayer(VectorLayer):
+    model = City
+    id = "cities"
+    tile_fields = ('city_code', "name")
+    min_zoom = 10
+
+    
+class CityCentroidVectorLayer(VectorLayer):
+    queryset = City.objects.annotate(
+        centroid=Centroid("geom"), # compute the city centroïd
+        area=Area("geom"), # compute the city area
+    )  
+    geom_field = "centroid"  # use the centroid field as geometry feature
+    id = "city_centroïds"
+    tile_fields = ('name', 'city_code', 'area', 'population')  # add area and population properties in each tile feature
+    min_zoom = 7  # let's show city name at zoom 7
+
+
+    
 # in your view file
 
-from django.views.generic import DetailView
-from vectortiles.mixins import BaseVectorTileView
-from vectortiles.postgis.views import MVTView
-from yourapp.models import Layer
+from yourapp.vector_layers import CityVectorLayer, CityCentroidVectorLayer
+
+from vectortiles.views import MVTView
 
 
-class LayerTileView(MVTView, DetailView):
-    model = Layer
-    vector_tile_fields = ('other_field_to_include', )
-
-    def get_vector_tile_layer_name(self):
-        return self.get_object().name
-
-    def get_vector_tile_queryset(self):
-        return self.get_object().features.all()
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return BaseVectorTileView.get(self,request=request, z=kwargs.get('z'), x=kwargs.get('x'), y=kwargs.get('y'))
+class CityTileView(MVTView):
+    layer_classes = [CityVectorLayer, CityCentroidVectorLayer]
 
 
 # in your urls file
-from django.urls import path
 from yourapp import views
-
 
 urlpatterns = [
     ...
-    path('layer/<int:pk>/tile/<int:z>/<int:x>/<int:y>', views.LayerTileView.as_view(), name="layer-tile"),
+    views.CityTileView.get_url(),  # serve tiles at default /tiles/<int:z>/<int:x>/<int:y>
     ...
 ]
 ```
 
-#### Usage without PostgreSQL / PostGIS
+Now, any tile requested at http://you_url/tiles/{z}/{x}/{y} that intersects a city will return a vector tile with two layers, `cities` with border geometries and `city_code` property, and `city_centroïds` with center geometry and `city_name` property.
 
-Just import and use vectortiles.mapbox.view.MVTView instead of vectortiles.postgis.view.MVTView
-
-#### Usage with DRF
-
-django-vectortiles can be used with DRF if `renderer_classes` of the view is overridden (see [DRF docs](https://www.django-rest-framework.org/api-guide/renderers/#custom-renderers)). Simply use the right BaseMixin and action on viewsets, or directly a GET method in an APIView, i.e.:
-
-See documentation for more details.
-
-#### Development
-
-##### With docker and docker-compose
-
-```bash
-docker pull makinacorpus/geodjango:bionic-3.6
-docker-compose build
-# docker-compose up
-docker-compose run /code/venv/bin/python ./manage.py test
-```
-
-##### Local
-
-* Install python and django requirements (python 3.6+, django 2.2+)
-* Install geodjango requirements
-* Have a postgresql / postgis 2.4+ enabled database
-* Use a virtualenv
-```bash
-pip install .[dev] -U
-```
+Read full documentation for examples, as multiple layers, cache policy, mapblibre integration, etc.
