@@ -1,11 +1,14 @@
 from urllib.parse import unquote, urljoin
 
+from django.urls import path
+
 from vectortiles import settings as app_settings
 
 
 class BaseVectorView:
     layer_classes = None
     layers = None
+    prefix_tiles_url = "tiles"
 
     def get_layer_classes(self):
         return self.layer_classes or []
@@ -69,7 +72,7 @@ class BaseTileJSONView(BaseVectorView):
         return layers_min_zoom if layers_min_zoom is not None else 0
 
     def get_max_zoom(self):
-        """Get tilejson manzoom from layers or self.man_zoom"""
+        """Get tilejson maxzoom from layers or self.max_zoom"""
         try:
             # maximum zoom level from layers
             layers_max_zoom = min(layer.get_max_zoom() for layer in self.get_layers())
@@ -159,3 +162,21 @@ class BaseVectorTileView(BaseVectorView):
     def get_content_status(self, z, x, y):
         content = self.get_layer_tiles(z, x, y)
         return (content, 200) if content else (content, 204)
+
+    def get_base_url(self):
+        pass
+
+    def get_default_url_pattern(self):
+        return "{z}/{x}/{y}"
+
+    def get_default_url_matrix(self):
+        pattern = self.get_default_url_pattern()
+        return f"{pattern.replace('{z}', '<int:z>').replace('{x}', '<int:x>').replace('{y}', '<int:y>')}"
+
+    def get_url(self, prefix=None, url_name=None):
+        """Generate URL to serve vector tiles with required parameters"""
+        return path(
+            f"{prefix or self.prefix_tiles_url}/{self.get_default_url_matrix()}",
+            self.as_view(),
+            name=url_name,
+        )

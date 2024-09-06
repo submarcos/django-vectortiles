@@ -1,4 +1,5 @@
-INSTALLATION
+============
+Installation
 ============
 
 Requirements
@@ -24,6 +25,6 @@ Other database backend usages
 
 .. code-block:: bash
 
-   pip install django-vectortiles[mapbox]
+   pip install django-vectortiles[python]
 
 This will include sub-dependencies to generate vector tiles from mapbox_vector_tiles python library.
