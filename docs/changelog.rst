@@ -2,20 +2,21 @@
 Changelog
 =========
 
-1.0.0-beta
-----------
-
-* Drop python 3.6 and Django 2.2
-* Add python 3.11 and Django 4.2
+1.0.0    (2024-09-06)
+---------------------
 
 **Breaking changes**
 
   * Refactor PostGIS and Python (old named MapBox) backends usage. Use setting to set (default postgis)
-  * No DetailView anymore. As Tile can have many layers, declare VectorLayer on MVTView (one or many).
+  * No DetailView anymore. Rewrite your classes to implement multiple layer per tile. Each layer is represented by a VectorLayer class.
 
-* Enhancements
+** Enhancements**
 
-  * Add compatibility to use with psycopg v3
+* Drop python 3.6
+* Drop Django 2.2 and 3.2
+* Add python 3.10 / 3.11 / 3.12
+* Add Django 4.2, 5.0, 5.1
+* Add compatibility to use with psycopg v3
 
 * Features
 
