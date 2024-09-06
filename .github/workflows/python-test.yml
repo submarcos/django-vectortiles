@@ -24,11 +24,11 @@ jobs:
         python-version: ['3.8', '3.12']
         django-version: ['4.2.*', '5.1.*']
         psycopg: ['psycopg2-binary']
-        postgis-image: ['postgis/postgis:11-2.5', 'postgis/postgis:latest']
+        postgis-image: ['postgis/postgis:12-2.5', 'postgis/postgis:latest']
         include:
           - postgis-image: 'postgis/postgis:latest'
             django-version: '4.2.*'
-            python-version: '3.11'
+            python-version: '3.12'
             psycopg: ['psycopg-binary']
 
     services:
