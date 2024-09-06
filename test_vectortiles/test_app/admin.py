@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.contrib.gis.admin import OSMGeoAdmin
+from django.contrib.gis.admin import GISModelAdmin
 
 from test_vectortiles.test_app.models import (
     Feature,
@@ -10,7 +10,7 @@ from test_vectortiles.test_app.models import (
 
 
 @admin.register(Feature)
-class FeatureAdmin(OSMGeoAdmin):
+class FeatureAdmin(GISModelAdmin):
     list_display = ("id", "name", "layer", "date")
     list_filter = ("layer", "date")
     search_fields = ("name",)
@@ -36,7 +36,7 @@ class FullDataLayerAdmin(admin.ModelAdmin):
 
 
 @admin.register(FullDataFeature)
-class FulDataFeatureAdmin(OSMGeoAdmin):
+class FulDataFeatureAdmin(GISModelAdmin):
     list_display = (
         "id",
         "layer",

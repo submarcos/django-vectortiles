@@ -21,21 +21,24 @@ jobs:
       POSTGRES_DB: ci_test
     strategy:
       matrix:
-        python-version: ['3.8', '3.11']
-        django-version: ['3.2.*', '4.2.*']
+        python-version: ['3.8', '3.12']
+        django-version: ['4.2.*', '5.1.*']
         psycopg: ['psycopg2-binary']
-        postgis-image: ['postgis/postgis:10-2.5', 'postgis/postgis:11-2.5', 'postgis/postgis:latest']
+        postgis-image: ['postgis/postgis:12-2.5', 'postgis/postgis:latest']
         exclude:
-          - postgis-image: 'postgis/postgis:11-2.5'
-            django-version: '3.2.*'  # test only with 10-2.5 and latest
-          - postgis-image: 'postgis/postgis:10-2.5'
-            django-version: '4.2.*'  # Django 4.2 supports only postgres >= 12
-          - postgis-image: 'postgis/postgis:11-2.5'
-            django-version: '4.2.*'  # Django 4.2 supports only postgres >= 12
+          - python-version: '3.8'
+            django-version: '5.1.*'
+            postgis-image: 'postgis/postgis:12-2.5'
+          - python-version: '3.12'
+            django-version: '5.1.*'
+            postgis-image: 'postgis/postgis:12-2.5'
+          - python-version: '3.8'
+            django-version: '5.1.*'
+            postgis-image: 'postgis/postgis:latest'
         include:
           - postgis-image: 'postgis/postgis:latest'
             django-version: '4.2.*'
-            python-version: '3.11'
+            python-version: '3.12'
             psycopg: ['psycopg-binary']
 
     services:
