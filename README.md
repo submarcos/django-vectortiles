@@ -136,5 +136,6 @@ urlpatterns = [
 ```
 
 Now, any tile requested at http://you_url/tiles/{z}/{x}/{y} that intersects a city will return a vector tile with two layers, `cities` with border geometries and `city_code` property, and `city_centroïds` with center geometry and `city_name` property.
+![image](https://github.com/user-attachments/assets/d472639a-db4c-40aa-984a-c68a8e841283)
 
-Read full documentation for examples, as multiple layers, cache policy, mapblibre integration, etc.
+[Read full documentation](https://django-vectortiles.readthedocs.io/) for examples, as multiple layers, cache policy, mapblibre integration, etc.
