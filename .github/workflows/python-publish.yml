@@ -14,7 +14,10 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    environment:
+      name: pypi
+      url: https://pypi.org/p/django-vectortiles/
+      
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -35,3 +38,4 @@ jobs:
 
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
