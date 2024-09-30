@@ -1,10 +1,10 @@
-![Tests](https://github.com/submarcos/django-vectortiles/workflows/Python%20/%20Django%20matrix%20test/badge.svg)
+![Tests](https://github.com/submarcos/django-vectortiles/workflows/Unit%20tests/badge.svg)
 [![Coverage](https://codecov.io/gh/submarcos/django-vectortiles/branch/master/graph/badge.svg)](https://codecov.io/gh/submarcos/django-vectortiles)
-
-![Python Version](https://img.shields.io/badge/python-%3E%3D%203.7-blue.svg)
-![Django Version](https://img.shields.io/badge/django-%3E%3D%203.2-blue.svg)
+![Python Version](https://img.shields.io/badge/python-%3E%3D%203.8-blue.svg)
+![Django Version](https://img.shields.io/badge/django-%3E%3D%204.2-blue.svg)
 
 # Generate MapBox VectorTiles from GeoDjango models
+![image](https://github.com/user-attachments/assets/46d5b475-c5c1-48b2-959d-9689968fdfef)
 
 ## Directly with PostgreSQL/PostGIS 2.4+ or python native mapbox_vector_tile
 
