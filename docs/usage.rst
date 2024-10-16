@@ -2,11 +2,11 @@
 Usage
 =====
 
-A vector tile is composed by vector layers which represent different kind of data. Each layer is composed by features.
+A vector tile is composed of vector layers which represent different kinds of data. Each layer is composed of features.
 
 To start using django-vectortiles, you need GeoDjango models with geometries.
 
-Then, you need to describe how your data will be embed in tiles.
+Then, you need to describe how your data will be embedded in tiles.
 
 Start by creating vector layers for your data...
 
@@ -36,7 +36,7 @@ Start by creating vector layers for your data...
         # all attributes available in vector layer definition can be defined
 
 
-Well. your vector layer is ready. next step is to create a tile class and a view to serve it.
+Well, your vector layer is ready. The next step is to create a tile class and a view to serve it.
 
 
 Simple layer tile view
@@ -65,7 +65,7 @@ Simple layer tile view
 Multiple layer tile view
 ************************
 
-As vector tile layer permit it, you can embed multiple layers in your tile.
+As vector tile layer permits it, you can embed multiple layers in your tile.
 
 Let's create a second layer.
 
@@ -99,10 +99,10 @@ Let's create a second layer.
 Using TileJSON
 **************
 
-It's a good practice to use tilejson to tell to your map library how to gt your tiles and their defintion.
-django-vectortiles permit that.
+It's a good practice to use TileJSON to tell to your map library how to get your tiles and their definition.
+django-vectortiles permits that.
 
-TileJSON and tile views share some data, as vactor layers definition. So we need to factorize some things.
+TileJSON and tile views share some data, as vector layers definitions. So we need to factorize some things.
 
 .. code-block:: python
 
@@ -129,15 +129,15 @@ TileJSON and tile views share some data, as vactor layers definition. So we need
         ...
     ]
 
-Now you can use your tiles with a map library like MapLibre or Mapbox GL JS, directly wit hthe tileJSON provided.
+Now you can use your tiles with a map library like MapLibre or Mapbox GL JS, directly with the provided TileJSON.
 
 .. warning::
 
-    By default, it's your browser URL that will be used to generate tile url in tilejson. Take care about django and SSL configuration (django settings, web server headers) if you want to generate an URL with https://
+    By default, it's your browser's URL that will be used to generate tile urls in TileJSON. Take care of Django and SSL configuration (Django settings, web server headers) if you want to generate an URL with https://
 
 .. note::
 
-    If your application is hosted on server with many workers, and you want to optimized tile loading, you can add several urls in your tilejson file.
+    If your application is hosted on a server with many workers, and you want to optimize tile loading, you can add several urls in your TileJSON file.
 
     .. code-block:: python
 
@@ -155,13 +155,13 @@ Now you can use your tiles with a map library like MapLibre or Mapbox GL JS, dir
             "https://c.tiles.xxxx",
         ]
 
-    With these settings, each tilejson file will contain several urls, and your map library will be able to parallel load tiles at time.
+    With these settings, each TileJSON file will contain several urls, and your map library will be able to parallel load tiles at time.
 
 
 More complex multiple layer tile view
 *************************************
 
-You can customize geometry data embed in your tiles.
+You can customize the geometry data embedded in your tiles.
 
 
 .. code-block:: python
