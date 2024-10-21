@@ -18,9 +18,9 @@ test_require = [
     "psycopg2-binary",  # for dev and test only. in production, use psycopg2
 ]
 
+
 python = [
     "mapbox_vector_tile",
-    "protobuf<4.21.0",  # https://github.com/tilezen/mapbox-vector-tile/issues/113
 ]
 
 setup(
