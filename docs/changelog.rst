@@ -2,6 +2,14 @@
 Changelog
 =========
 
+1.0.0    (XXXX-XX-XX)
+---------------------
+
+**Bugfixes**
+
+  - Fix `get_url` view method. Use class name in lower format as default prefix.
+
+
 1.0.0    (2024-09-04)
 ---------------------
 

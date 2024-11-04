@@ -8,7 +8,11 @@ from vectortiles import settings as app_settings
 class BaseVectorView:
     layer_classes = None
     layers = None
-    prefix_tiles_url = "tiles"
+    prefix_url = None
+
+    @classmethod
+    def get_default_prefix_tiles_url(cls):
+        return cls.prefix_url if cls.prefix_url else cls.__name__.lower()
 
     def get_layer_classes(self):
         return self.layer_classes or []
@@ -166,17 +170,20 @@ class BaseVectorTileView(BaseVectorView):
     def get_base_url(self):
         pass
 
-    def get_default_url_pattern(self):
+    @classmethod
+    def get_default_url_pattern(cls):
         return "{z}/{x}/{y}"
 
-    def get_default_url_matrix(self):
-        pattern = self.get_default_url_pattern()
+    @classmethod
+    def get_default_url_matrix(cls):
+        pattern = cls.get_default_url_pattern()
         return f"{pattern.replace('{z}', '<int:z>').replace('{x}', '<int:x>').replace('{y}', '<int:y>')}"
 
-    def get_url(self, prefix=None, url_name=None):
+    @classmethod
+    def get_url(cls, prefix=None, url_name=None):
         """Generate URL to serve vector tiles with required parameters"""
         return path(
-            f"{prefix or self.prefix_tiles_url}/{self.get_default_url_matrix()}",
-            self.as_view(),
+            f"{prefix or cls.get_default_prefix_tiles_url()}/{cls.get_default_url_matrix()}",
+            cls.as_view(),
             name=url_name,
         )

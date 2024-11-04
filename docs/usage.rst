@@ -58,7 +58,7 @@ Simple layer tile view
 
     urlpatterns = [
         ...
-        views.CityTileView.get_url(),  # serve tiles at default /tiles/<int:z>/<int:x>/<int:y>
+        views.CityTileView.get_url(),  # serve tiles at default /citytileview/<int:z>/<int:x>/<int:y>
         ...
     ]
 
@@ -92,7 +92,7 @@ Let's create a second layer.
     # in your urls file
     urlpatterns = [
         ...
-        views.CityAndStateTileView.get_url(),  # serve tiles at default /tiles/<int:z>/<int:x>/<int:y>
+        views.CityAndStateTileView.get_url(),  # serve tiles at default /cityandstatetileview/<int:z>/<int:x>/<int:y>
         ...
     ]
 
