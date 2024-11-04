@@ -58,7 +58,7 @@ Simple layer tile view
 
     urlpatterns = [
         ...
-        views.CityTileView.get_url(),  # serve tiles at default /tiles/<int:z>/<int:x>/<int:y>
+        views.CityTileView.get_url(),  # serve tiles at default /citytileview/<int:z>/<int:x>/<int:y>
         ...
     ]
 
@@ -92,7 +92,7 @@ Let's create a second layer.
     # in your urls file
     urlpatterns = [
         ...
-        views.CityAndStateTileView.get_url(),  # serve tiles at default /tiles/<int:z>/<int:x>/<int:y>
+        views.CityAndStateTileView.get_url(),  # serve tiles at default /cityandstatetileview/<int:z>/<int:x>/<int:y>
         ...
     ]
 
@@ -125,7 +125,7 @@ TileJSON and tile views share some data, as vector layers definitions. So we nee
     urlpatterns = [
         ...
         views.CityAndStateTileView.get_url(),  # serve tiles at /city-and-states/<int:z>/<int:x>/<int:y>
-        views.CityAndStateTileJSON.get_url(),  # serve tilejson at /city-and-states/tiles.json
+        views.CityAndStateTileJSON.get_urls(tiles_urls=views.CityAndStateTileView.get_url()),  # serve tilejson at /city-and-states/tiles.json
         ...
     ]
 
