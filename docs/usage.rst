@@ -125,7 +125,7 @@ TileJSON and tile views share some data, as vactor layers definition. So we need
     urlpatterns = [
         ...
         views.CityAndStateTileView.get_url(),  # serve tiles at /city-and-states/<int:z>/<int:x>/<int:y>
-        views.CityAndStateTileJSON.get_url(),  # serve tilejson at /city-and-states/tiles.json
+        views.CityAndStateTileJSON.get_urls(tiles_urls=views.CityAndStateTileView.get_url()),  # serve tilejson at /city-and-states/tiles.json
         ...
     ]
 
