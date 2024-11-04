@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from test_vectortiles.test_app.models import Feature, Layer
-from vectortiles.views import TileJSONView
+from vectortiles.views import TileJSONView, MVTView
 
 
 class VectorTileBaseTest(TestCase):
@@ -82,6 +82,23 @@ class VectorTileTestCase(VectorTileBaseTest):
             },
         )
 
+    def test_get_url_defined_prefix_in_attribute(self):
+        class TestView(MVTView):
+            prefix_url = "test"
+
+        self.assertEqual(str(TestView.get_url()), "<URLPattern 'test/<int:z>/<int:x>/<int:y>'>")
+
+    def test_get_url_defined_prefix_in_param(self):
+        class TestView(MVTView):
+            pass
+
+        self.assertEqual(str(TestView.get_url(prefix="toto")), "<URLPattern 'toto/<int:z>/<int:x>/<int:y>'>")
+
+    def test_get_url_default_prefix(self):
+        class TestView(MVTView):
+            pass
+
+        self.assertEqual(str(TestView.get_url()), "<URLPattern 'testview/<int:z>/<int:x>/<int:y>'>")
 
 class VectorTileTileJSONTestCase(VectorTileBaseTest):
     def test_features(self):
