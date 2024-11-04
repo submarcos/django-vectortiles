@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from test_vectortiles.test_app.models import Feature, Layer
-from vectortiles.views import TileJSONView, MVTView
+from vectortiles.views import MVTView, TileJSONView
 
 
 class VectorTileBaseTest(TestCase):
