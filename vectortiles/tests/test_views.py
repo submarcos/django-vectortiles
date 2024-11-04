@@ -86,19 +86,27 @@ class VectorTileTestCase(VectorTileBaseTest):
         class TestView(MVTView):
             prefix_url = "test"
 
-        self.assertEqual(str(TestView.get_url()), "<URLPattern 'test/<int:z>/<int:x>/<int:y>'>")
+        self.assertEqual(
+            str(TestView.get_url()), "<URLPattern 'test/<int:z>/<int:x>/<int:y>'>"
+        )
 
     def test_get_url_defined_prefix_in_param(self):
         class TestView(MVTView):
             pass
 
-        self.assertEqual(str(TestView.get_url(prefix="toto")), "<URLPattern 'toto/<int:z>/<int:x>/<int:y>'>")
+        self.assertEqual(
+            str(TestView.get_url(prefix="toto")),
+            "<URLPattern 'toto/<int:z>/<int:x>/<int:y>'>",
+        )
 
     def test_get_url_default_prefix(self):
         class TestView(MVTView):
             pass
 
-        self.assertEqual(str(TestView.get_url()), "<URLPattern 'testview/<int:z>/<int:x>/<int:y>'>")
+        self.assertEqual(
+            str(TestView.get_url()), "<URLPattern 'testview/<int:z>/<int:x>/<int:y>'>"
+        )
+
 
 class VectorTileTileJSONTestCase(VectorTileBaseTest):
     def test_features(self):
