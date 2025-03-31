@@ -28,3 +28,10 @@ class AsMVTGeom(GeoFunc):
     @cached_property
     def output_field(self):
         return RawGeometryField()
+
+class Force2D(GeoFunc):
+    function = "ST_FORCE2D"
+
+    @cached_property
+    def output_field(self):
+        return RawGeometryField()
