@@ -22,7 +22,6 @@ class VectorLayer(BaseVectorLayerMixin):
         features = features.annotate(
             geom_prepared=AsMVTGeom(
                 Force2D(Transform(self.geom_field, 3857)),
-                Transform(self.geom_field, 3857),
                 MakeEnvelope(xmin, ymin, xmax, ymax, 3857),
                 self.tile_extent,
                 self.tile_buffer,
