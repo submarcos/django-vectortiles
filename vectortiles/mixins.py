@@ -151,6 +151,15 @@ class BaseTileJSONView(BaseVectorView):
             ],
         }
 
+    @classmethod
+    def get_url(cls, tilejson_name="tiles.json", prefix=None, url_name=None):
+        """Generate URL to serve vector tiles with required parameters"""
+        return path(
+            f"{prefix or cls.get_default_prefix_tiles_url()}/{tilejson_name}",
+            cls.as_view(),
+            name=url_name,
+        )
+
 
 class BaseVectorTileView(BaseVectorView):
     """Base mixin to handle vector tile in a django View"""

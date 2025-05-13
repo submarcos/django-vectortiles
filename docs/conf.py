@@ -35,7 +35,6 @@ release = open(os.path.join(HERE, "..", "vectortiles", "VERSION.md")).read().str
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx_rtd_theme",
     "sphinx.ext.coverage",
 ]
 
@@ -53,9 +52,28 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
-
+html_theme = "sphinx_material"
+html_title = "django-vectortiles"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+# Material theme options (see theme.conf for more information)
+html_theme_options = {
+    # Set the name of the project to appear in the navigation.
+    "nav_title": "django-vectortiles",
+    # Specify a base_url used to generate sitemap.xml. If not
+    # specified, then no sitemap will be built.
+    "base_url": "https://django-vectortiles.readthedocs.org",
+    # Set the color and the accent color
+    "color_primary": "blue",
+    "color_accent": "light-blue",
+    # Set the repo location to get a badge with stats
+    "repo_url": "https://github.com/submarcos/django-vectortiles/",
+    "repo_name": "Project",
+    # Visible levels of the global TOC; -1 means unlimited
+    "globaltoc_depth": 3,
+    # If False, expand all TOC entries
+    "globaltoc_collapse": False,
+    # If True, show hidden TOC entries
+}

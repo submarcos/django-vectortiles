@@ -55,7 +55,7 @@ setup(
     tests_require=test_require,
     extras_require={
         "test": test_require,
-        "dev": test_require + python + ["django-debug-toolbar", "sphinx-rtd-theme"],
+        "dev": test_require + python + ["django-debug-toolbar", "sphinx-material"],
         "python": python,
         "mapbox": python,
     },
