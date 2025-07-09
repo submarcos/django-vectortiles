@@ -56,9 +56,12 @@ class VectorLayer(BaseVectorLayerMixin):
                     for feature in features
                 ],
             }
-            return mapbox_vector_tile.encode(
-                tile,
-                quantize_bounds=(west, south, east, north),
-                extents=self.tile_extent,
-            ) or b""
+            return (
+                mapbox_vector_tile.encode(
+                    tile,
+                    quantize_bounds=(west, south, east, north),
+                    extents=self.tile_extent,
+                )
+                or b""
+            )
         return b""
