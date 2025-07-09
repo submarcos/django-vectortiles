@@ -5,6 +5,10 @@ Changelog
 1.0.1+dev    (XXXX-XX-XX)
 -------------------------
 
+**Enhancements**
+
+  * Add python 3.13 and Django 5.2 in test matrix
+
 **Bugfixes**
 
   - Fix python backend not loaded from settings and use with spatialite
