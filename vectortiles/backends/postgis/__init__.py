@@ -2,7 +2,7 @@ from django.contrib.gis.db.models.functions import Transform
 from django.db import connections
 
 from vectortiles.backends import BaseVectorLayerMixin
-from vectortiles.backends.postgis.functions import AsMVTGeom, MakeEnvelope
+from vectortiles.backends.postgis.functions import AsMVTGeom, MakeEnvelope, Force2D
 
 
 class VectorLayer(BaseVectorLayerMixin):
@@ -21,7 +21,7 @@ class VectorLayer(BaseVectorLayerMixin):
         # annotate prepared geometry for MVT
         features = features.annotate(
             geom_prepared=AsMVTGeom(
-                Transform(self.geom_field, 3857),
+                Force2D(Transform(self.geom_field, 3857)),
                 MakeEnvelope(xmin, ymin, xmax, ymax, 3857),
                 self.tile_extent,
                 self.tile_buffer,
