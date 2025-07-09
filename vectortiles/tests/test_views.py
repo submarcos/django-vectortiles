@@ -38,6 +38,7 @@ class VectorTileTestCase(VectorTileBaseTest):
                 "features": {
                     "extent": 4096,
                     "version": 2,
+                    "type": "FeatureCollection",
                     "features": [
                         {
                             "geometry": {"type": "Point", "coordinates": [2048, 2048]},
@@ -70,6 +71,7 @@ class VectorTileTestCase(VectorTileBaseTest):
                 "features": {
                     "extent": 4096,
                     "version": 2,
+                    "type": "FeatureCollection",
                     "features": [
                         {
                             "geometry": {"type": "Point", "coordinates": [2048, 2048]},
