@@ -38,12 +38,13 @@ class VectorTileTestCase(VectorTileBaseTest):
                 "features": {
                     "extent": 4096,
                     "version": 2,
+                    "type": "FeatureCollection",
                     "features": [
                         {
                             "geometry": {"type": "Point", "coordinates": [2048, 2048]},
                             "properties": {"name": "feat1"},
                             "id": 0,
-                            "type": 1,
+                            "type": "Feature",
                         },
                         {
                             "geometry": {
@@ -52,7 +53,7 @@ class VectorTileTestCase(VectorTileBaseTest):
                             },
                             "properties": {"name": "feat2"},
                             "id": 0,
-                            "type": 2,
+                            "type": "Feature",
                         },
                     ],
                 }
@@ -70,12 +71,13 @@ class VectorTileTestCase(VectorTileBaseTest):
                 "features": {
                     "extent": 4096,
                     "version": 2,
+                    "type": "FeatureCollection",
                     "features": [
                         {
                             "geometry": {"type": "Point", "coordinates": [2048, 2048]},
                             "properties": {"name": "feat1"},
                             "id": 0,
-                            "type": 1,
+                            "type": "Feature",
                         }
                     ],
                 }

@@ -2,6 +2,13 @@
 Changelog
 =========
 
+1.0.1+dev    (XXXX-XX-XX)
+-------------------------
+
+**Bugfixes**
+
+  - Fix python backend not loaded from settings and use with spatialite
+
 1.0.1    (2024-11-04)
 ---------------------
 
