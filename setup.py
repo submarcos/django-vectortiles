@@ -20,7 +20,6 @@ test_require = [
 
 python = [
     "mapbox_vector_tile",
-    "protobuf<4.21.0",  # https://github.com/tilezen/mapbox-vector-tile/issues/113
 ]
 
 setup(
