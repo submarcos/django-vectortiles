@@ -61,3 +61,4 @@ class VectorLayer(BaseVectorLayerMixin):
                 quantize_bounds=(west, south, east, north),
                 extents=self.tile_extent,
             ) or b""
+        return b""
