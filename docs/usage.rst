@@ -50,7 +50,7 @@ Simple layer tile view
 
 
     class CityTileView(MVTView):
-        layer_classes = [CityVectorLayer, CityCentroidVectorLayer]  # you can use get_layer_classes method, or directly get_layers instead
+        layer_classes = [CityVectorLayer]  # you can use get_layer_classes method, or directly get_layers instead
 
     # in your urls file
     from django.urls import path
@@ -93,6 +93,7 @@ Let's create a second layer.
     urlpatterns = [
         ...
         views.CityAndStateTileView.get_url(),  # serve tiles at default /cityandstatetileview/<int:z>/<int:x>/<int:y>
+        # views.CityAndStateTileView.get_url(prefix="tiles")   # serve tiles at /tiles/<int:z>/<int:x>/<int:y>
         ...
     ]
 
