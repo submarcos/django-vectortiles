@@ -98,21 +98,15 @@ AUTH_PASSWORD_VALIDATORS = []
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = os.getenv("LANGUAGE_CODE", "en-us")
 
-TIME_ZONE = "UTC"
+TIME_ZONE = os.getenv("TZ", "UTC")
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
-
-
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": lambda x: True,
-}
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -128,3 +122,9 @@ CACHES = {
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+SSL_ENABLED = bool(os.getenv("SSL_ENABLED", False))
+if SSL_ENABLED:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True

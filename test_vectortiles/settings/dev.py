@@ -14,4 +14,6 @@ MIDDLEWARE += [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
-SHOW_TOOLBAR_CALLBACK = lambda request: True
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": lambda x: True,
+}
