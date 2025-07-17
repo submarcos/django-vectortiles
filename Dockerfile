@@ -11,6 +11,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 RUN uv python install ${PYTHON_VERSION}
 
 RUN mkdir -p /code/src
+WORKDIR /code/src
 
 RUN useradd -ms /bin/bash django
 RUN chown -R django:django /code
@@ -43,8 +44,6 @@ USER django
 RUN uv venv -p $PYTHON_VERSION /code/venv
 ENV UV_PYTHON=/code/venv/bin/python
 ENV UV_LINK_MODE=copy
-
-WORKDIR /code/src
 
 COPY --chown=django:django README.md ./
 COPY --chown=django:django setup.py ./
