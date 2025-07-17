@@ -69,6 +69,6 @@ COPY --chown=django:django vectortiles /code/src/vectortiles
 COPY --chown=django:django test_vectortiles /code/src/test_vectortiles
 
 USER django
-RUN uv pip install gunicorn psycopg
+RUN uv pip install gunicorn psycopg djangorestframework
 
 CMD ["/code/venv/bin/gunicorn", "-b", "0.0.0.0:8000", "test_vectortiles.wsgi:application", "--workers", "1"]
