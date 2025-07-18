@@ -11,6 +11,9 @@ services:
   web:
     build:
       context: .
+      target: dev
+      args:
+        - PYTHON_VERSION=3.9
     depends_on:
       - postgres
     environment:

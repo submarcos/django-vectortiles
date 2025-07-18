@@ -47,13 +47,17 @@ class BaseTileJSONView(BaseVectorView):
 
     def __init__(self, *args, **kwargs):
         if self.get_min_zoom() > self.get_max_zoom():
-            raise ValueError("min_zoom must be lower than equal than max_zoom")
+            msg = "min_zoom must be lower than equal than max_zoom"
+            raise ValueError(msg)
         if self.get_max_zoom() < self.get_min_zoom():
-            raise ValueError("max_zoom must be greater than equal than min_zoom")
+            msg = "max_zoom must be greater than equal than min_zoom"
+            raise ValueError(msg)
         if not (0 <= self.get_min_zoom() <= 30):
-            raise ValueError("min_zoom should be in range 0 - 30")
+            msg = "min_zoom should be in range 0 - 30"
+            raise ValueError(msg)
         if not (0 <= self.get_max_zoom() <= 30):
-            raise ValueError("max_zoom should be in range 0 - 30")
+            msg = "max_zoom should be in range 0 - 30"
+            raise ValueError(msg)
         super().__init__(*args, **kwargs)
 
     def get_min_zoom(self):
@@ -161,7 +165,8 @@ class BaseVectorTileView(BaseVectorView):
         layers = self.get_layers()
         if layers:
             return b"".join(layer.get_tile(x, y, z) for layer in layers)
-        raise Exception("No layers defined")
+        msg = "No layers defined"
+        raise Exception(msg)
 
     def get_content_status(self, z, x, y):
         content = self.get_layer_tiles(z, x, y)

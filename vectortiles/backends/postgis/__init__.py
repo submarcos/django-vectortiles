@@ -43,9 +43,7 @@ class VectorLayer(BaseVectorLayerMixin):
         sql, params = features.query.sql_with_params()
         with connections[features.db].cursor() as cursor:
             cursor.execute(
-                "SELECT ST_ASMVT(subquery.*, %s, %s, %s) FROM ({}) as subquery".format(
-                    sql
-                ),
+                f"SELECT ST_ASMVT(subquery.*, %s, %s, %s) FROM ({sql}) as subquery",
                 params=[
                     self.get_id(),
                     self.tile_extent,

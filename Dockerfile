@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.9
+ARG PYTHON_VERSION=3.13
 
 FROM ubuntu:noble AS base
 
@@ -46,7 +46,7 @@ ENV UV_PYTHON=/code/venv/bin/python
 ENV UV_LINK_MODE=copy
 
 COPY --chown=django:django README.md ./
-COPY --chown=django:django setup.py ./
+COPY --chown=django:django pyproject.toml ./
 COPY --chown=django:django vectortiles/VERSION.md vectortiles/
 RUN uv pip install .
 
@@ -64,7 +64,7 @@ ENV UV_PYTHON=/code/venv/bin/python
 
 COPY --chown=django:django --from=build /code/venv /code/venv
 COPY --chown=django:django --from=build /home/django/.local/share/uv /home/django/.local/share/uv
-COPY --chown=django:django setup.py setup.py
+COPY --chown=django:django pyproject.toml pyproject.toml
 COPY --chown=django:django manage.py manage.py
 COPY --chown=django:django vectortiles /code/src/vectortiles
 COPY --chown=django:django test_vectortiles /code/src/test_vectortiles
