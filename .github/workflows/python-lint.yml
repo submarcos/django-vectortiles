@@ -17,13 +17,17 @@ jobs:
         LANG: C.UTF-8
     steps:
       - uses: actions/checkout@v4
-      - name: Install flake8
+      - name: Install ruff
         run: |
-          pip install flake8
+          pip install ruff
 
       - name: Check
         run: |
-          flake8 vectortiles test_vectortiles
+          ruff check vectortiles test_vectortiles
+
+     - name: Format
+        run: |
+          ruff format --check vectortiles test_vectortiles
 
   isort:
     runs-on: ubuntu-latest
