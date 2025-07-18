@@ -128,8 +128,9 @@ CACHES = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SSL_ENABLED = bool(os.getenv("SSL_ENABLED", False))
+VECTOR_TILES_URL = [f"https://{extra_domain}" for extra_domain in os.getenv("EXTRA_DOMAINS", "").split(',')]
+
 if SSL_ENABLED:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    VECTOR_TILES_URL = [f"https://{extra_domain}" for extra_domain in os.getenv("EXTRA_DOMAINS", "").split(',')]
