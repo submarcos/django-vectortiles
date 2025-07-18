@@ -29,41 +29,7 @@ jobs:
         run: |
           ruff format --check vectortiles test_vectortiles
 
-  isort:
-    runs-on: ubuntu-latest
-    container:
-      image: python:3.8
-      env:
-        LANG: C.UTF-8
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install isort
-        run: |
-          pip install isort
-
-      - name: Check
-        run: |
-          isort -c vectortiles test_vectortiles
-
-  black:
-    runs-on: ubuntu-latest
-    container:
-      image: python:3.8
-      env:
-        LANG: C.UTF-8
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install black
-        run: |
-          pip install black
-
-      - name: Check
-        run: |
-          black --check vectortiles test_vectortiles
-
-  doc:
+  docc:
     runs-on: ubuntu-latest
     container:
       image: python:3.8
