@@ -3,6 +3,7 @@ from hashlib import md5
 from django.core.cache import cache
 from django.urls import reverse
 from django.views.generic import TemplateView
+from django.views.generic.dates import timezone_today
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -75,7 +76,7 @@ class LayerTileJSONView(MultipleVectorLayers, TileJSONView):
     """Simple model TileJSON View"""
 
     name = "My layers dataset"
-    attribution = "@IGN - BD Topo 12/2022"
+    attribution = f"@IGN - BD Topo {timezone_today().year}"
     legend = "https://avatars.githubusercontent.com/u/7448208?s=96&v=4"
     description = "My dataset"
     center = [1.77, 44.498, 8]
