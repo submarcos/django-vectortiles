@@ -17,8 +17,12 @@
 pip install django-vectortiles
 ```
 
-* By default, postgis backend is enabled.
+* By default, postgis database backend is required.
 * Ensure you have psycopg installed
+
+```bash
+pip install psycopg  # or psycopg2
+```
 
 #### If you don't want to use Postgis and / or PostgreSQL
 ```bash
@@ -26,6 +30,12 @@ pip install django-vectortiles[python]
 ```
 * This will include mapbox_vector_tiles package and its dependencies
 * Set ```VECTOR_TILES_BACKEND="vectortiles.backends.python"``` in your project settings.
+
+```python
+# in settings.py
+
+VECTOR_TILES_BACKEND = "vectortiles.backends.python"
+```
 
 ### Examples
 
@@ -79,7 +89,7 @@ from yourapp import views
 
 urlpatterns = [
     ...
-    CityTileView.get_url(),  # serve tiles at default /tiles/<int:z>/<int:x>/<int:y>. You can override url prefix and tile scheme in class attributes.
+    CityTileView.get_url(),  # serve tiles at default /citytileview/<int:z>/<int:x>/<int:y>. You can override url prefix and tile scheme in class attributes.
     ...
 ]
 ```
@@ -130,7 +140,7 @@ from yourapp import views
 
 urlpatterns = [
     ...
-    views.CityTileView.get_url(),  # serve tiles at default /tiles/<int:z>/<int:x>/<int:y>
+    views.CityTileView.get_url(prefix="cities"),  # serve tiles at /cities/<int:z>/<int:x>/<int:y>
     ...
 ]
 ```
