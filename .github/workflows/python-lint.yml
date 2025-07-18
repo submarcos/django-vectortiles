@@ -9,7 +9,7 @@ on:
   pull_request:
 
 jobs:
-  flake8:
+  ruff:
     runs-on: ubuntu-latest
     container:
       image: python:3.8
