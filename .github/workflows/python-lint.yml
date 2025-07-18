@@ -10,6 +10,7 @@ on:
 
 jobs:
   ruff:
+    name: Check ruff quality rules
     runs-on: ubuntu-latest
     container:
       image: python:3.8
@@ -29,7 +30,8 @@ jobs:
         run: |
           ruff format --check vectortiles test_vectortiles
 
-  docc:
+  doc:
+    name: Check doc is building
     runs-on: ubuntu-latest
     container:
       image: python:3.8
