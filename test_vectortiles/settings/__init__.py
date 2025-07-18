@@ -28,7 +28,10 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = bool(os.getenv("DEBUG", False))
 
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = [
+    *os.getenv("ALLOWED_HOSTS", "").split(","),
+    *[f"{extra_domain}" for extra_domain in os.getenv("EXTRA_DOMAINS", []).split(',')]
+]
 
 # Application definition
 
@@ -129,3 +132,4 @@ if SSL_ENABLED:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    VECTOR_TILES_URL = [f"https://{extra_domain}" for extra_domain in os.getenv("EXTRA_DOMAINS", []).split(',')]
