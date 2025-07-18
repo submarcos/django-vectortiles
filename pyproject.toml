@@ -39,6 +39,7 @@ dev = [
     "black",
     "coverage",
     "djangorestframework",
+    "mapbox_vector_tile",
     "psycopg2-binary",
     "django-debug-toolbar",
     "sphinx-rtd-theme"
@@ -50,7 +51,8 @@ test = [
     "black",
     "coverage",
     "djangorestframework",
-    "psycopg2-binary"
+    "psycopg2-binary",
+    "mapbox_vector_tile"
 ]
 python = [
     "mapbox_vector_tile"
