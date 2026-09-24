@@ -46,7 +46,7 @@ Simple layer tile view
 
     # in your view file
     from your_app.vector_layers import CityVectorLayer
-    from your_app.views import MVTView
+    from vectortiles.views import MVTView
 
 
     class CityTileView(MVTView):
