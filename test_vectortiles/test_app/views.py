@@ -1,4 +1,4 @@
-from hashlib import md5
+from hashlib import sha256
 
 from django.core.cache import cache
 from django.urls import reverse
@@ -60,7 +60,7 @@ class LayerView(MultipleVectorLayers, MVTView):
         return last_updated_layer.update_datetime if last_updated_layer else None
 
     def get_content_status(self, z, x, y):
-        cache_key = md5(
+        cache_key = sha256(
             f"tilejson-{self.get_layers_last_update()}-{z}-{x}-{y}".encode()
         ).hexdigest()
         if cache.has_key(cache_key):  # NOQA W601
