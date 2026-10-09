@@ -9,7 +9,7 @@
 import datetime
 
 # If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
+# add these directories to sys.path here. If the directory is relative to this
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
@@ -25,7 +25,8 @@ copyright = f"2021 - {datetime.date.today().year}, Jean-Etienne Castagnede"
 author = "Jean-Etienne Castagnede"
 
 # The full version, including alpha/beta/rc tags
-release = open(os.path.join(HERE, "..", "vectortiles", "VERSION.md")).read().strip()
+with open(os.path.join(HERE, "..", "vectortiles", "VERSION.md")) as f:
+    release = f.read().strip()
 
 
 # -- General configuration ---------------------------------------------------
