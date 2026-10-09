@@ -1,4 +1,4 @@
-from hashlib import md5
+from hashlib import sha256
 
 from django.contrib.gis.db.models.functions import Centroid
 from django.core.cache import cache
@@ -26,7 +26,7 @@ class FeatureLayerVectorLayer(VectorLayer):
         self.instance = instance
 
     def get_tile(self, x, y, z):
-        cache_key = md5(f"{self.get_id()}-{z}-{x}-{y}".encode()).hexdigest()
+        cache_key = sha256(f"{self.get_id()}-{z}-{x}-{y}".encode()).hexdigest()
         if cache.has_key(cache_key):  # NOQA W601
             return cache.get(cache_key)
 
@@ -95,7 +95,7 @@ class FullDataFeatureVectorLayer(VectorLayer):
         return ("properties",)
 
     def get_tile(self, x, y, z):
-        cache_key = md5(
+        cache_key = sha256(
             f"{self.get_id()}-{self.instance.update_datetime}-{z}-{x}-{y}".encode()
         ).hexdigest()
         if cache.has_key(cache_key):  # NOQA W601
